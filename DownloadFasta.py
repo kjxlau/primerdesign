@@ -13,7 +13,7 @@ country1=input("Country 1 of interest: ")
 country2=input("Country 2 of interest: ")
 country3=input("Country 3 of interest: ")
 #Singapore AND Thailand 
-search_term=organism+str("[organism] AND ")+country1+str("[All Fields] OR ")+country2+str("[All Fields] OR ")+country3+str("[All Fields]")
+search_term=organism+str("[organism:exp] AND ")+country1+str("[All Fields] OR ")+country2+str("[All Fields] OR ")+country3+str("[All Fields]")
 print(search_term)
 
 IDs = Entrez.read(Entrez.esearch(db="nucleotide", retmax=no_of_records, term=search_term)) ["IdList"]
