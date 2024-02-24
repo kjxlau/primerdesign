@@ -2,3 +2,5 @@ As part of a project from PSB academy, we plan to develop a series of python scr
 1. DownloadFasta.py
 2. XXX.py
 3. XXX.py
+   
+Ashiqah and Kenny
