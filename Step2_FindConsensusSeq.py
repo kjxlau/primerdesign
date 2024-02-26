@@ -24,16 +24,14 @@ from Functions import IUB_to_regexp
 from Functions import FindSeq
 
 #Step 1: Read the multiple sequence alignment result in
-alignment_file=input("The alignment file used to design primers>>>")
+alignment_file=input("The alignment file for primer design: ")
 alignment=AlignIO.read(alignment_file,'fasta')
 
 #Ask user for target species name or serotype or genotype
 target=input("Enter the target species/serotype/genotype: ")
 
 #Step 2: Define the sliding window size to search consensus sequence
-minconsensus,maxconsensus=input("Set min and max consensus size>>>").strip().split()
-print("Minimum size range from "+minconsensus+"bp to "+maxconsensus+"bp",'\n')
-minconsensus=int(minconsensus);maxconsensus=int(maxconsensus);
+minconsensus=20;maxconsensus=30;
 
 #Step 3: Set no of degenerate nucleotides allowed in consensus sequence
 degenConsensus=int(input('Set the number of degenerate nucleotide for consensus seq: '))
