@@ -22,3 +22,7 @@ from pandas import ExcelFile
 #import the functions written in function.py
 from SeqCounting_withdegeneracy import IUB_to_regexp
 from Functions import FindSeq
+
+#Step1: Read the multiple sequence alignment result in
+alignment_file=input("The alignment file used to design primers>>>")
+alignment=AlignIO.read(alignment_file,'fasta')
