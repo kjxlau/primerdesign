@@ -33,9 +33,41 @@ target=input("Enter the target species/serotype/genotype: ")
 #Step 2: Define the sliding window size to search consensus sequence
 minconsensus,maxconsensus=input("Set min and max consensus size>>>").strip().split()
 print("Minimum size range from "+minconsensus+"bp to "+maxconsensus+"bp",'\n')
-minconsensus=int(minconsensus);maxconsensus=int(maxconsensus)
+minconsensus=int(minconsensus);maxconsensus=int(maxconsensus);
 
 #Step 3: Set no of degenerate nucleotides allowed in consensus sequence
 degenConsensus=int(input('Set the number of degenerate nucleotide for consensus seq: '))
 print("Consensus sequence has "+str(degenConsensus)+" degeneracy",'\n')
 
+#Step 4: Set % cutoff for no of mutations allowed across consensus sequence
+Cutoff=float(input("Set percent cutoff of mutant ratio (0 to 1): "))
+print("Cutoff ratio is set as "+str(Cutoff),'\n')
+
+#Step 5: Add aligned sequences into array prior to sliding window process
+species=[];seqdes=[]
+species_align=msa([])
+for record in alignment:
+	align_array=np.array([list(record.seq) for record in alignment],dtype=str)
+	if target in seqdes[0:2]:
+        	species.append(record.seq)
+	species_align.add_sequence(record.id,str(record.seq))
+	spec_array=np.array(species,dtype=str)
+
+summary_align=AlignInfo.SummaryInfo(species_align)
+spec_consensus=summary_align.dumb_consensus()
+
+SpecArrayLength=len(spec_array)
+print("No of sequences that contains target species/serotype: "+SpecArrayLength)
+FullLength=len(spec_array.T)
+print("Length of aligned sequences: "+FullLength)
+FullArrayLength=len(align_array)
+print("No of entered sequences in alignment file: "+FullArrayLength)
+
+#Step 6: Perform the sliding window to search for consensus sequence
+seqlist,seqloc,seqGC,seqTm=FindSeq(spec_array,align_array,minconsensus,
+	maxconsensus,SpecArrayLength,FullLength,FullArrayLength,degenConsensus,Cutoff)
+
+#Step 7: Save the output in a csv file
+output=pd.DataFrame(list(zip(seqlist,seqloc,seqGC,seqTm)),
+	columns=['Consensus_Sequence','Location','GC','Tm'])
+output.to_csv("Consensus_Sequence.csv",index=False)
