@@ -19,6 +19,6 @@ import pandas as pd
 from pandas import ExcelWriter
 from pandas import ExcelFile
 
-#import the function written by me
+#import the functions written in function.py
 from SeqCounting_withdegeneracy import IUB_to_regexp
-from GenDENVPmPb import genpmpb
+from Function import FindSeq
