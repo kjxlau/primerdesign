@@ -2,7 +2,7 @@ As part of a project from PSB academy, we are developing a series of python scri
 
 Step1_DownloadFasta.py: Users will be prompted to enter (1) No of fasta entries to download, (2) Organism of interest or NCBI taxa ID, (3) Countries of interest and (4) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
-Step2_FindConsensusSeq.py
+Step2_FindConsensusSeq.py: Users will be prompted to enter (1) Alignment file from step 1
 
 
 XXX.py
