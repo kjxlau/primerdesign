@@ -37,7 +37,6 @@ minconsensus=int(minconsensus);maxconsensus=int(maxconsensus);
 
 #Step 3: Set no of degenerate nucleotides allowed in consensus sequence
 degenConsensus=int(input('Set the number of degenerate nucleotide for consensus seq: '))
-print("Consensus sequence has "+str(degenConsensus)+" degeneracy",'\n')
 
 #Step 4: Set % cutoff for no of mutations allowed across consensus sequence
 Cutoff=float(input("Set percent cutoff of mutant ratio (0 to 1): "))
@@ -47,6 +46,7 @@ print("Cutoff ratio is set as "+str(Cutoff),'\n')
 species=[];seqdes=[]
 species_align=msa([])
 for record in alignment:
+	seqdes=re.split('\ |\[|\]|\,|\(|\)|\_|\-',record.description)
 	align_array=np.array([list(record.seq) for record in alignment],dtype=str)
 	if target in seqdes[0:2]:
         	species.append(record.seq)
@@ -57,11 +57,11 @@ summary_align=AlignInfo.SummaryInfo(species_align)
 spec_consensus=summary_align.dumb_consensus()
 
 SpecArrayLength=len(spec_array)
-print("No of sequences that contains target species/serotype: "+SpecArrayLength)
+print("No of sequences that contains target species/serotype: "+str(SpecArrayLength))
 FullLength=len(spec_array.T)
-print("Length of aligned sequences: "+FullLength)
+print("Length of aligned sequences: "+str(FullLength))
 FullArrayLength=len(align_array)
-print("No of entered sequences in alignment file: "+FullArrayLength)
+print("No of entered sequences in alignment file: "+str(FullArrayLength))
 
 #Step 6: Perform the sliding window to search for consensus sequence
 seqlist,seqloc,seqGC,seqTm=FindSeq(spec_array,align_array,minconsensus,
