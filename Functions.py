@@ -216,8 +216,6 @@ def FindSeq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,Fu
 					
 					seqlist.append(Seq(''.join(consensus)))
 					seqGC.append(GCcalc(consensus))
-					seqloc.append(n+1)
-
-					
+					seqloc.append(n+1)				
 
 	return seqlist,seqloc,seqGC,seqTm
