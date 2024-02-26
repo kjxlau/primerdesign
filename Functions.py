@@ -22,6 +22,28 @@ from Bio.Alphabet import IUPAC
 from Bio.Seq import Seq
 from Bio.SeqUtils import MeltingTemp as mt
 
+def IUB_to_regexp(iub):
+ 
+    regular_expression = ''
+    iub2character_class = {
+     
+        '-' : '-',
+        'A' : 'A',
+        'C' : 'C',
+        'G' : 'G',
+        'T' : 'T',
+        'R' : '[GA]',
+        'Y' : '[CT]',
+        'M' : '[AC]',
+        'K' : '[GT]',
+        'S' : '[GC]',
+        'W' : '[AT]',
+    }
+
+    for i in range(len(iub)):
+    	regular_expression+=iub2character_class[iub[i]]
+    return regular_expression
+
 def ConsensusSeq(array,ratio):
 	consensus=[]
 	for nt in range(len(array.T)):
@@ -121,7 +143,7 @@ def Tmcalc(array):
 	return (pmlist)
 
 
-def FindSeq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,FullArrayLength,df,degNo,Cutoff):
+def findseq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,FullArrayLength,df,degNo,Cutoff):
 	seq=[];seqlist=[];seqloc=[];seqGC=[];seqTm=[]
 	for windowsize in range(minsize,maxsize+1):
 		#Count the nucleotide frequences in the species array
@@ -216,6 +238,6 @@ def FindSeq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,Fu
 					
 					seqlist.append(Seq(''.join(consensus)))
 					seqGC.append(GCcalc(consensus))
-					seqloc.append(n+1)				
+					seqloc.append(n+1)			
 
 	return seqlist,seqloc,seqGC,seqTm
