@@ -142,7 +142,7 @@ def Tmcalc(array):
 	return (pmlist)
 
 
-def FindSeq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,FullArrayLength,df,degNo,Cutoff):
+def FindSeq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,FullArrayLength,degNo,Cutoff):
 	seq=[];seqlist=[];seqloc=[];seqGC=[];seqTm=[]
 	for windowsize in range(minsize,maxsize+1):
 		#Count the nucleotide frequences in the species array
@@ -226,8 +226,6 @@ def FindSeq(spec_array,align_array,minsize,maxsize,SpecArrayLength,FullLength,Fu
 				for item in klist:
 					if item==windowsize:
 						fullmatch+=1
-					if item>windowsize-df:
-						count+=1
 
 				if count<=SpecArrayLength or fullmatch==FullArrayLength:
 					if set(Tmcalc(spec_array[:,n:n+windowsize]))=={'NA'}:
