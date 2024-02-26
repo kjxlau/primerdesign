@@ -23,6 +23,13 @@ from pandas import ExcelFile
 from SeqCounting_withdegeneracy import IUB_to_regexp
 from Functions import FindSeq
 
-#Step1: Read the multiple sequence alignment result in
+#Step 1: Read the multiple sequence alignment result in
 alignment_file=input("The alignment file used to design primers>>>")
 alignment=AlignIO.read(alignment_file,'fasta')
+
+#Ask user for target species name or serotype or genotype
+target=input("Enter the target species/serotype/genotype: ")
+
+#Step 2: Define the sliding window size to search consensus sequence
+minconsensus,maxconsensus=input("Set min and max consensus size>>>").strip().split()
+
