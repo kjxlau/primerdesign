@@ -14,7 +14,6 @@ from statistics import mean
 #import pandas for dataframe handling
 import pandas as pd
 
-from ConsensusFunc_DENV import ConsFunc
 from Bio import AlignIO
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
