@@ -21,4 +21,4 @@ from pandas import ExcelFile
 
 #import the functions written in function.py
 from SeqCounting_withdegeneracy import IUB_to_regexp
-from Function import FindSeq
+from Functions import FindSeq
