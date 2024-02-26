@@ -7,7 +7,7 @@ You will be prompted to enter:
 3. Countries of interest
 4. Filename to save in .fasta format
 
-Step2_FindSeq.py
+Step2_FindConsensusSeq.py
 XXX.py
    
 Ashiqah and Kenny
