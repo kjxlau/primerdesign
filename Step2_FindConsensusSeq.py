@@ -31,7 +31,7 @@ alignment=AlignIO.read(alignment_file,'fasta')
 target=input("Enter the target species/serotype/genotype: ")
 
 #Step 2: Define the sliding window size to search consensus sequence
-minconsensus=20;maxconsensus=30;
+minconsensus=250;maxconsensus=400;
 
 #Step 3: Set no of degenerate nucleotides allowed in consensus sequence
 degenConsensus=int(input('Set the number of degenerate nucleotide for consensus seq: '))
@@ -48,7 +48,6 @@ for record in alignment:
 	align_array=np.array([list(record.seq) for record in alignment],dtype=str)
 	if target in seqdes[0:2]:
         	species.append(record.seq)
-	species_align.add_sequence(record.id,str(record.seq))
 	spec_array=np.array(species,dtype=str)
 
 summary_align=AlignInfo.SummaryInfo(species_align)
