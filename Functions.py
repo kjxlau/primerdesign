@@ -2,7 +2,6 @@
 from Bio import AlignIO
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import IUPAC
 from Bio.Seq import Seq
 
 #import essential packages
@@ -13,12 +12,6 @@ from statistics import mean
 
 #import pandas for dataframe handling
 import pandas as pd
-
-from Bio import AlignIO
-from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import IUPAC
-from Bio.Seq import Seq
 from Bio.SeqUtils import MeltingTemp as mt
 
 def IUB_to_regexp(iub):
