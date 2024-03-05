@@ -71,6 +71,6 @@ for item in output["Sequence"]:
 	seq=str(item).replace('-','')
 	length=len(seq)
 	NewPrimerSeq.append(seq)
-	NewPrimerLen.append(length)
-    output=pd.DataFrame(list(zip(NewPrimerSeq,seqloc,NewPrimerLen,seqGC,seqTm)),columns=['Sequence','Location','Length','GC','Tm'])
-    output.to_csv("Lamp_Primers.csv",index=False)
+	NewPrimerLen.append(length)D
+	output=pd.DataFrame(list(zip(NewPrimerSeq,seqloc,NewPrimerLen,seqGC,seqTm)),columns=['Sequence','Location','Length','GC','Tm'])
+	output.to_csv("Lamp_Primers.csv",index=False)
