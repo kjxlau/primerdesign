@@ -32,7 +32,7 @@ count=0
 for n1 in listprimern:
     for n2 in listprimern:
         primerdf=abs(df["Location"][n1]-df["Location"][n2])
-        if (primerdf<=400) and int(df["Location"][n1]+df["Length"][n1]+250)<int(df["Location"][n2]):
+        if (primerdf<=1000) and int(df["Location"][n1]+df["Length"][n1]+250)<int(df["Location"][n2]):
             count+=1
             if count<=1:
                 F3.append(Seq(df["Sequence"][n1]))
@@ -56,7 +56,7 @@ for n in df2.index:
 for n1 in listprimern2:
     for n2 in listprimern2:
         primerdf2=abs(df2["F3Loc"][n1]-df2["B3Loc"][n2])
-        if (primerdf2<=160 and
+        if (primerdf2<=500 and
         int(df2["F3Loc"][n2]+df2["F3Len"][n2]+40)<int(df2["F3Loc"][n1]) and
         int(df2["B3Loc"][n1]-40)>int(df2["B3Loc"][n2])):
             count+=1
@@ -117,3 +117,4 @@ for n1 in listprimern4:
                 df5.to_csv("LF_LB"+".csv",index=False)
         else:
             count=0;
+
