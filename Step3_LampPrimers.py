@@ -31,7 +31,7 @@ count=0
 for n1 in listprimern:
     for n2 in listprimern:
         primerdf=abs(df["Location"][n1]-df["Location"][n2])
-        if (primerdf>=200):
+        if (primerdf<=400):
             count+=1
             if count<=1:
                 F3.append(Seq(df["Sequence"][n1]))
