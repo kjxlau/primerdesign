@@ -89,10 +89,33 @@ for n1 in listprimern3:
                 F1cLoc.append(df3["F2Loc"][n1])
                 F1cLen.append(df3["F2Len"][n1])
                 B1c.append((df3["B2"][n2]).reverse_complement())
-                B1cLoc.append(df2["B2Loc"][n2])
-                B1cLen.append(df2["B2Len"][n2])
+                B1cLoc.append(df3["B2Loc"][n2])
+                B1cLen.append(df3["B2Len"][n2])
                 df4=pd.DataFrame(list(zip(F1c,F1cLoc,F1cLen,B1c,B1cLoc,B1cLen)),columns=['F1c','F1cLoc','F1cLen','B1c','B1cLoc','B1cLen'])
                 df4.to_csv("F1c_B1c"+".csv",index=False)
         else:
             count=0;
-
+            
+LF=[];LFLoc=[];LFLen=[]
+LB=[];LBLoc=[];LBLen=[]
+count=0
+#Find LF and LB primers
+listprimern4=[]
+for n in df4.index:
+	listprimern4.append(n)
+for n1 in listprimern4:
+    for n2 in listprimern4:
+        if int(df4["F1cLoc"][n2]+40)<int(df4["F1cLoc"][n1]) and
+        (int(df4["B1cLoc"][n1]-40)>int(df4["B1cLoc"][n2])) :
+            count+=1
+            if count<=1:
+                LF.append((df4["F1c"][n1]).reverse_complement())
+                LF.append(df4["F1cLoc"][n1])
+                LF.append(df4["F1cLen"][n1])
+                LB.append((df4["B1c"][n2]).reverse_complement())
+                LBLoc.append(df4["B1cLoc"][n2])
+                LBLen.append(df4["B1cLen"][n2])
+                df5=pd.DataFrame(list(zip(LF,LFLoc,LFLen,LBc,LBLoc,LBLen)),columns=['LF','LFLoc','LFLen','LB','LBLoc','LBLen'])
+                df5.to_csv("LF_LB"+".csv",index=False)
+        else:
+            count=0;
