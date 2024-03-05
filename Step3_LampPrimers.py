@@ -33,7 +33,7 @@ for n1 in listprimern:
         primerdf=abs(df["Location"][n1]-df["Location"][n2])
         if (primerdf>=200):
             count+=1
-            if count<=3:
+            if count<=1:
                 F3.append(Seq(df["Sequence"][n1]))
                 F3Loc.append(df["Location"][n1])
                 F3Len.append(df["Length"][n1])
@@ -41,7 +41,7 @@ for n1 in listprimern:
                 B3Loc.append(df["Location"][n2])
                 B3Len.append(df["Length"][n2])
                 df2=pd.DataFrame(list(zip(F3,F3Loc,F3Len,B3,B3Loc,B3Len)),columns=['F3','F3Loc','F3Len','B3','B3Loc','B3Len'])
-                df2.to_csv("df2"+".csv",index=False)
+                df2.to_csv("F3_B3"+".csv",index=False)
         else:
             count=0;
 F2=[];F2Loc=[];F2Len=[]
@@ -56,7 +56,7 @@ for n1 in listprimern2:
         primerdf2=abs(df2["F3Loc"][n1]-df2["B3Loc"][n2])
         if primerdf2<=160 and int(df2["F3Loc"][n2]+df2["F3Len"][n2])<int(df2["F3Loc"][n1]):
             count+=1
-            if count<=3:
+            if count<=1:
                 F2.append(df2["F3"][n1])
                 F2Loc.append(df2["F3Loc"][n1])
                 F2Len.append(df2["F3Len"][n1])
@@ -64,7 +64,7 @@ for n1 in listprimern2:
                 B2Loc.append(df2["B3Loc"][n2])
                 B2Len.append(df2["B3Len"][n2])
                 df3=pd.DataFrame(list(zip(F2,F2Loc,F2Len,B2,B2Loc,B2Len)),columns=['F2','F2Loc','F2Len','B2','B2Loc','B2Len'])
-                df3.to_csv("df3"+".csv",index=False)
+                df3.to_csv("F2_B2"+".csv",index=False)
         else:
             count=0;
             
@@ -79,7 +79,7 @@ for n1 in listprimern3:
     for n2 in listprimern3:
         if int(df3["F2Loc"][n2]+df3["F2Len"][n2])<int(df3["F2Loc"][n1]) and (int(df3["B2Loc"][n2])>int(df3["B2Loc"][n1])) :
             count+=1
-            if count<=3:
+            if count<=1:
                 F1c.append((df3["F2"][n1]).reverse_complement())
                 F1cLoc.append(df3["F2Loc"][n1])
                 F1cLen.append(df3["F2Len"][n1])
@@ -87,6 +87,6 @@ for n1 in listprimern3:
                 B1cLoc.append(df2["B2Loc"][n2])
                 B1cLen.append(df2["B2Len"][n2])
                 df4=pd.DataFrame(list(zip(F1c,F1cLoc,F1cLen,B1c,B1cLoc,B1cLen)),columns=['F1c','F1cLoc','F1cLen','B1c','B1cLoc','B1cLen'])
-                df4.to_csv("df4"+".csv",index=False)
+                df4.to_csv("F1c_B1c"+".csv",index=False)
         else:
             count=0;
