@@ -81,7 +81,8 @@ for n in df3.index:
 	listprimern3.append(n)
 for n1 in listprimern3:
     for n2 in listprimern3:
-        if int(df3["F2Loc"][n2]+df3["F2Len"][n2]+40)<int(df3["F2Loc"][n1]) and (int(df3["B2Loc"][n2]-40)>int(df3["B2Loc"][n1])) :
+        if int(df3["F2Loc"][n2]+df3["F2Len"][n2]+40)<int(df3["F2Loc"][n1]) and
+        (int(df3["B2Loc"][n1]-40)>int(df3["B2Loc"][n2])) :
             count+=1
             if count<=1:
                 F1c.append((df3["F2"][n1]).reverse_complement())
