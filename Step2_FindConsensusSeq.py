@@ -16,8 +16,6 @@ from statistics import mean
 
 #import pandas for dataframe handling
 import pandas as pd
-from pandas import ExcelWriter
-from pandas import ExcelFile
 
 #import the functions written in function.py
 from Functions import IUB_to_regexp
@@ -31,7 +29,7 @@ alignment=AlignIO.read(alignment_file,'fasta')
 target=input("Enter the target species/serotype/genotype: ")
 
 #Step 2: Define the sliding window size to search consensus sequence
-minconsensus=250;maxconsensus=400;
+minconsensus=20;maxconsensus=30;
 
 #Step 3: Set no of degenerate nucleotides allowed in consensus sequence
 degenConsensus=int(input('Set the number of degenerate nucleotide for consensus seq: '))
@@ -48,6 +46,7 @@ for record in alignment:
 	align_array=np.array([list(record.seq) for record in alignment],dtype=str)
 	if target in seqdes[0:2]:
         	species.append(record.seq)
+	species_align.add_sequence(record.id,str(record.seq))
 	spec_array=np.array(species,dtype=str)
 
 summary_align=AlignInfo.SummaryInfo(species_align)
@@ -63,8 +62,18 @@ print("No of entered sequences in alignment file: "+str(FullArrayLength))
 #Step 6: Perform the sliding window to search for consensus sequence
 seqlist,seqloc,seqGC,seqTm=FindSeq(spec_array,align_array,minconsensus,
 	maxconsensus,SpecArrayLength,FullLength,FullArrayLength,degenConsensus,Cutoff)
-
-#Step 7: Save the output in a csv file
 output=pd.DataFrame(list(zip(seqlist,seqloc,seqGC,seqTm)),
-	columns=['Consensus_Sequence','Location','GC','Tm'])
-output.to_csv("Consensus_Sequence.csv",index=False)
+	columns=['Sequence','Location','GC','Tm'])
+
+#Step 7: Remove dashes and find the length of primer sequences
+NewPrimerSeq=[];NewPrimerLen=[]
+for item in output["Sequence"]:
+	seq=str(item).replace('-','')
+	length=len(seq)
+	NewPrimerSeq.append(seq)
+	NewPrimerLen.append(length)
+
+#Step 8: Save the output in a csv file
+output=pd.DataFrame(list(zip(NewPrimerSeq,seqloc,NewPrimerLen,seqGC,seqTm)),
+	columns=['Sequence','Location','Length','GC','Tm'])
+output.to_csv("Lamp_Primers.csv",index=False)
