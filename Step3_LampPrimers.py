@@ -18,7 +18,7 @@ from statistics import mean
 import pandas as pd
 
 #Step 1: Import primer sequence above Tm of 60
-df=pd.read_csv("Lamp_Primers1.csv")
+df=pd.read_csv("Lamp_Primers.csv")
 listprimern=[]
 for n in df.index:
 	if float(df["Tm"][n])>=60:
