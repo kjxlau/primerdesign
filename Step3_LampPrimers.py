@@ -18,7 +18,7 @@ from statistics import mean
 import pandas as pd
 
 #Step 1: Import primer sequence above Tm of 60
-df=pd.read_csv("Lamp_Primers.csv")
+df=pd.read_csv("Lamp_Primers1.csv")
 listprimern=[]
 for n in df.index:
 	if float(df["Tm"][n])>=60:
@@ -27,6 +27,7 @@ for n in df.index:
 F3=[];F3Loc=[];F3Len=[]
 B3=[];B3Loc=[];B3Len=[]
 count=0
+
 #Step 2: Find F3 and B3 primers
 for n1 in listprimern:
     for n2 in listprimern:
@@ -44,6 +45,7 @@ for n1 in listprimern:
                 df2.to_csv("F3_B3"+".csv",index=False)
         else:
             count=0;
+
 F2=[];F2Loc=[];F2Len=[]
 B2=[];B2Loc=[];B2Len=[]
 count=0
@@ -54,7 +56,9 @@ for n in df2.index:
 for n1 in listprimern2:
     for n2 in listprimern2:
         primerdf2=abs(df2["F3Loc"][n1]-df2["B3Loc"][n2])
-        if primerdf2<=160 and int(df2["F3Loc"][n2]+df2["F3Len"][n2]+40)<int(df2["F3Loc"][n1]):
+        if (primerdf2<=160 and
+        int(df2["F3Loc"][n2]+df2["F3Len"][n2]+40)<int(df2["F3Loc"][n1]) and
+        int(df2["B3Loc"][n1]-40)>int(df2["B3Loc"][n2])):
             count+=1
             if count<=1:
                 F2.append(df2["F3"][n1])
@@ -90,3 +94,4 @@ for n1 in listprimern3:
                 df4.to_csv("F1c_B1c"+".csv",index=False)
         else:
             count=0;
+
