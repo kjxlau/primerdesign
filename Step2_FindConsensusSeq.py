@@ -72,8 +72,5 @@ for item in output["Sequence"]:
 	length=len(seq)
 	NewPrimerSeq.append(seq)
 	NewPrimerLen.append(length)
-
-#Step 8: Save the output in a csv file
-output=pd.DataFrame(list(zip(NewPrimerSeq,seqloc,NewPrimerLen,seqGC,seqTm)),
-	columns=['Sequence','Location','Length','GC','Tm'])
-output.to_csv("Lamp_Primers.csv",index=False)
+    output=pd.DataFrame(list(zip(NewPrimerSeq,seqloc,NewPrimerLen,seqGC,seqTm)),columns=['Sequence','Location','Length','GC','Tm'])
+    output.to_csv("Lamp_Primers.csv",index=False)
