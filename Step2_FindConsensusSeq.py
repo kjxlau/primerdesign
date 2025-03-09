@@ -73,4 +73,4 @@ for item in output["Sequence"]:
 	NewPrimerSeq.append(seq)
 	NewPrimerLen.append(length)
 	output=pd.DataFrame(list(zip(NewPrimerSeq,seqloc,NewPrimerLen,seqGC,seqTm)),columns=['Sequence','Location','Length','GC','Tm'])
-	output.to_csv("Lamp_Primers.csv",index=False)
+	output.to_csv("Primers.csv",index=False)
