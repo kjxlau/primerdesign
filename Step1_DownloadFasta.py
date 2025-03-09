@@ -5,10 +5,7 @@ Entrez.api_key = "6b675e217b0d870e6ca896cd257b4c073708"
 
 no_of_records=input("Enter No of Records to download: ")
 organism=input("Enter organism of interest: ")
-#DENV1: txid11053
-#DENV2: txid11060
-#DENV3: txid11069
-#DENV4: txid11070
+
 country1=input("Country 1 of interest: ")
 country2=input("Country 2 of interest: ")
 country3=input("Country 3 of interest: ")
