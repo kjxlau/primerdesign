@@ -1,62 +1,57 @@
-#import biopython package
-from Bio import AlignIO
-from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
+#Kenny Lau, PhD
+#Denka Life Innovation Research Pte Ltd
+#03/03/2023
+#This tool is used to screen for probes after selected amplicons
 
-from Bio.Seq import Seq
-from Bio.Align import AlignInfo
-from Bio.Align import MultipleSeqAlignment as msa
-from Bio.SeqUtils import MeltingTemp as mt
-
-#import essential packages
-import re
-import numpy as np
-import math,string,os,sys,shutil,csv,openpyxl,glob
-from statistics import mean
-
-#import pandas for dataframe handling
 import pandas as pd
+from Bio.Seq import Seq
 
-F3_B3=pd.read_csv("F3_B3.csv")
-F2_B2=pd.read_csv("F2_B2.csv")
-F1c_B1c=pd.read_csv("F1c_B1c.csv")
-LF_LB=pd.read_csv("LF_LB.csv")
+df=pd.read_excel("Primer_Candidates.xlsx")
+df1=pd.read_csv("primerpair.csv")
 
-listn=[]
-for n in LF_LB.index:
-	listn.append(n)
+minprobetm = int(input("Enter min probe Tm: "))
 
-F3=[];F3Loc=[];F3Len=[]
-B3=[];B3Loc=[];B3Len=[]
-FIP=[];FIPLoc=[];FIPLen=[]
-BIP=[];BIPLoc=[];BIPLen=[]
-LF=[];LFLoc=[];LFLen=[]
-LR=[];LRLoc=[];LRLen=[]
-for n1 in listn:
-    for n2 in listn:
-        if int(F3_B3["F3Loc"][n1]+30)<F2_B2["F2Loc"][n2] and
-        LF_LB["LFLoc"][n2]<F2_B2["F2Loc"][n2] and
-        F2_B2["F2Loc"][n2]<F1c_Bc1["F1cLoc"][n2] and
-        F3_B3["B3Loc"][n2]>int(F2_B2["B2Loc"][n1]+30) and
-        LF_LB["LBLoc"][n2]<F2_B2["B2Loc"][n2] and
-        F2_B2["B2Loc"][n2]<F1c_B1c["B1cLoc"][n2]:
-            F3.append(F3_B3["F3"][n1])
-            F3Loc.append(F3_B3["F3Loc"][n1])
-            F3Len.append(F3_B3["F3Len"][n1])
-            FIP.append((F1c_B1c["F1c"][n2])+(LF_LB["LF"][n2])+(F2_B2["F2"][n2]))
-            FIPLoc.append(F2_B2["F2Loc"][n2])
-            FIPLen.append(F2_B2["F2Len"][n2])
-            LF.append(LF_LB["LF"][n2])
-            LFLoc.append(LF_LB["LFLoc"][n2])
-            LFLen.append(LF_LB["LFLen"][n2])
-            B3.append(F3_B3["B3"][n2])
-            B3Loc.append(F3_B3["B3Loc"][n2])
-            B3Len.append(F3_B3["B3Len"][n2])
-            BIP.append((F1c_Bc1["B1c"][n1])+(LF_LB["LB"][n1])+(F2_B2["B2"][n1]))
-            BIPLoc.append(F2_B2["B2Loc"][n1])
-            BIPLen.append(F2_B2["B2Len"][n1])
-            LB.append(LF_LB["LB"][n1])
-            LBLoc.append(LF_LB["LBLoc"][n1])
-            LBLen.append(LF_LB["LBLen"][n1])
-            output=pd.DataFrame(list(zip(F3,F3Loc,F3Len,FIP,FIPLoc,FIPLen,LF,LFLoc,LFLen,LB,LBLoc,LBLen,BIP,BIPLoc,BIPLen,B3,B3Loc,B3Len)),columns=['F3','F3Loc','F3Len','FIP','FIPLoc','FIPLen','LF','LFLoc','LFLen','LB','LBLoc','LBLen','BIP','BIPLoc','BIPLen','B3','B3Loc','B3Len'])
-            output.to_csv("final_lamp_primers"+".csv",index=False)
+listproben=[]
+for n in df.index:
+	if float(df["PrimerTm"][n])>=minprobetm:
+		listproben.append(n)
+		
+listprimern=[]
+for n in df1.index:
+	listprimern.append(n)
+
+Forward=[];Reverse=[];Start=[];End=[]
+TmF=[];TmR=[];GCF=[];GCR=[]
+LenF=[];LenR=[];Ampsize=[]
+Probe=[];PLoc=[];PTm=[]
+
+count=0
+
+for item1 in listproben:
+    for item2 in listprimern:
+        if (int(df["PrimerLoc"][item1])>(int(df1["Start"][item2])+int(df1["LenF"][item2]))) and (int(df["PrimerLoc"][item1])<(int(df1["End"][item2])-int(df["Length"][item1]))):
+            count+=1
+            if count<=10:
+                Forward.append(Seq(df1["Forward"][item2]))
+                Reverse.append(Seq(df1["Reverse"][item2]))
+                Probe.append(Seq(df["PrimerSeq"][item1]))
+                Start.append(df1["Start"][item2])
+                End.append(df1["End"][item2])
+                TmF.append(float(df1["TmF"][item2]))
+                TmR.append(float(df1["TmR"][item2]))
+                GCF.append(df1["GCF"][item2])
+                GCR.append(df1["GCR"][item2])
+                LenF.append(df1["LenF"][item2])
+                LenR.append(df1["LenR"][item2])
+                Ampsize.append(df1["Ampsize"][item2])
+                PLoc.append(df["PrimerLoc"][item1])
+                PTm.append(df["PrimerTm"][item1])
+            else:
+                break
+
+probeselect=pd.DataFrame(list(zip(Forward,Reverse,Start,End,TmF,TmR,GCF,GCR,LenF,LenR,Ampsize,Probe,PLoc,PTm)),columns=['Forward','Reverse','Start','End','TmF','TmR','GCF','GCR','LenF','LenR','Ampsize','Probe','PLoc','PTm'])
+
+probeselect.to_csv("probeselect"+".csv",index=False)
+
+
+
