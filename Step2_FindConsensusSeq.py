@@ -29,7 +29,7 @@ alignment=AlignIO.read(alignment_file,'fasta')
 target=input("Enter the target species/serotype/genotype: ")
 
 #Step 2: Define the sliding window size to search consensus sequence
-minconsensus=1500;maxconsensus=1500;
+minconsensus=20;maxconsensus=30;
 
 #Step 3: Set no of degenerate nucleotides allowed in consensus sequence
 degenConsensus=int(input('Set the number of degenerate nucleotide for consensus seq: '))
