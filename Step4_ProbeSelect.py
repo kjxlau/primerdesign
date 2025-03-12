@@ -1,7 +1,7 @@
 import pandas as pd
 from Bio.Seq import Seq
 
-df=pd.read_excel("Primer_Candidates.xlsx")
+df=pd.read_csv("primer.csv")
 df1=pd.read_csv("primerpair.csv")
 
 minprobetm = int(input("Enter min probe Tm: "))
