@@ -13,6 +13,6 @@ IDs = Entrez.read(Entrez.esearch(db="nucleotide", retmax=no_of_records, term=sea
 filename=input("Filename to save as fasta: ")+str(".fasta")
 with open(filename, 'w') as f:
     for ID in IDs:
-        seq=Entrez.efetch(db="protein", id=ID, rettype="fasta", retmode="text").read()
+        seq=Entrez.efetch(db="nucleotide", id=ID, rettype="fasta", retmode="text").read()
         print(seq)
         f.write(seq)
