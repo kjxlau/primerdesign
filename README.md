@@ -42,6 +42,10 @@ To screen for potential primer sets
 
 **Step4_ProbeSelect.py: **
 
+Users will be prompted to enter 
+
+(1) Minimum probe melting temperature required
+
 To screen for potential Taqman probe.
 
 Have fun developing your own test PCR probes!
