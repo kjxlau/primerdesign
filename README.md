@@ -29,6 +29,14 @@ Users will be prompted to enter
 
 **Step3_PrimerScreening.py: **
 
+Users will be prompted to enter 
+
+(1) Minimum and maximum amplicon size
+
+(2) Melting Temperature of amplicon product
+
+(3) Max difference in length of flanking primer pair
+
 To screen for potential primer sets
 
 
