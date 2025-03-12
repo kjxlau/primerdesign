@@ -8,7 +8,7 @@ minprobetm = int(input("Enter min probe Tm: "))
 
 listproben=[]
 for n in df.index:
-	if float(df["PrimerTm"][n])>=minprobetm:
+	if float(df["Tm"][n])>=minprobetm:
 		listproben.append(n)
 		
 listprimern=[]
@@ -24,7 +24,7 @@ count=0
 
 for item1 in listproben:
     for item2 in listprimern:
-        if (int(df["PrimerLoc"][item1])>(int(df1["Start"][item2])+int(df1["LenF"][item2]))) and (int(df["PrimerLoc"][item1])<(int(df1["End"][item2])-int(df["Length"][item1]))):
+        if (int(df["Location"][item1])>(int(df1["Start"][item2])+int(df1["LenF"][item2]))) and (int(df["PrimerLoc"][item1])<(int(df1["End"][item2])-int(df["Length"][item1]))):
             count+=1
             if count<=10:
                 Forward.append(Seq(df1["Forward"][item2]))
@@ -39,14 +39,15 @@ for item1 in listproben:
                 LenF.append(df1["LenF"][item2])
                 LenR.append(df1["LenR"][item2])
                 Ampsize.append(df1["Ampsize"][item2])
-                PLoc.append(df["PrimerLoc"][item1])
-                PTm.append(df["PrimerTm"][item1])
+                PLoc.append(df["Location"][item1])
+                PTm.append(df["Tm"][item1])
             else:
                 break
 
 probeselect=pd.DataFrame(list(zip(Forward,Reverse,Start,End,TmF,TmR,GCF,GCR,LenF,LenR,Ampsize,Probe,PLoc,PTm)),columns=['Forward','Reverse','Start','End','TmF','TmR','GCF','GCR','LenF','LenR','Ampsize','Probe','PLoc','PTm'])
 
 probeselect.to_csv("probeselect"+".csv",index=False)
+
 
 
 
