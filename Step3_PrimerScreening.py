@@ -1,8 +1,3 @@
-#Kenny Lau, PhD
-#Denka Life Innovation Research Pte Ltd
-#03/03/2023
-#This tool is used to screen for primers from shortlisted candidates
-
 import pandas as pd
 from Bio.Seq import Seq
 
