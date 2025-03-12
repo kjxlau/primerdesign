@@ -1,4 +1,4 @@
-Hello. I have designed a series of 4 python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
+Hello. I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
 I will explain each of the four part python script as follows:
 **Step1_DownloadFasta.py: **
