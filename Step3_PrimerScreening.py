@@ -1,7 +1,7 @@
 import pandas as pd
 from Bio.Seq import Seq
 
-df=pd.read_excel("Primer_Candidates.xlsx")
+df=pd.read_csv("primer.csv")
 
 minampsize = int(input("Enter the min amplicon size: "))
 maxampsize = int(input("Enter the max amplicon size: "))
