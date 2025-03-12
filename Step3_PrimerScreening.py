@@ -11,7 +11,7 @@ prdiff = int(input("Max diff betwn fwd and rev primer lengths: "))
 
 listprimern=[]
 for n in df.index:
-	if float(df["PrimerTm"][n])>=minprimertm:
+	if float(df["Tm"][n])>=minprimertm:
 		listprimern.append(n)
 		
 #listproben=[]
