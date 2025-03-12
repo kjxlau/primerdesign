@@ -46,7 +46,7 @@ for record in alignment:
 	align_array=np.array([list(record.seq) for record in alignment],dtype=str)
 	if target in seqdes[0:2]:
         	species.append(record.seq)
-	species_align.append(record.id,str(record.seq))
+	species_align.append(record)
 	spec_array=np.array(species,dtype=str)
 
 summary_align=AlignInfo.SummaryInfo(species_align)
