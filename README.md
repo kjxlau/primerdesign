@@ -9,6 +9,9 @@ Step3_PrimerScreening.py: To screen for potential primer sets
 
 Step4_ProbeSelect.py: To screen for potential Taqman probe.
 
-Have a good day and have fun developing your own test PCR probes!
+Have fun developing your own test PCR probes!
 
+For any queries, you can drop me an email at kennyjxlau@gmail.com
+
+Best regards,
 Kenny
