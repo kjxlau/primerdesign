@@ -24,12 +24,12 @@ count=0
 
 for item1 in listproben:
     for item2 in listprimern:
-        if (int(df["Location"][item1])>(int(df1["Start"][item2])+int(df1["LenF"][item2]))) and (int(df["PrimerLoc"][item1])<(int(df1["End"][item2])-int(df["Length"][item1]))):
+        if (int(df["Location"][item1])>(int(df1["Start"][item2])+int(df1["LenF"][item2]))) and (int(df["Location"][item1])<(int(df1["End"][item2])-int(df["Length"][item1]))):
             count+=1
             if count<=10:
                 Forward.append(Seq(df1["Forward"][item2]))
                 Reverse.append(Seq(df1["Reverse"][item2]))
-                Probe.append(Seq(df["PrimerSeq"][item1]))
+                Probe.append(Seq(df["Sequence"][item1]))
                 Start.append(df1["Start"][item2])
                 End.append(df1["End"][item2])
                 TmF.append(float(df1["TmF"][item2]))
