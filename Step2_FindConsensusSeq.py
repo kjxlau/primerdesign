@@ -42,11 +42,11 @@ print("Cutoff ratio is set as "+str(Cutoff),'\n')
 species=[];seqdes=[]
 species_align=msa([])
 for record in alignment:
-	seqdes=re.split('\ |\[|\]|\,|\(|\)|\_|\-',record.description)
+	seqdes=re.split(' ',record.description)
 	align_array=np.array([list(record.seq) for record in alignment],dtype=str)
 	if target in seqdes[0:2]:
         	species.append(record.seq)
-	species_align.add_sequence(record.id,str(record.seq))
+	species_align.append(record.id,str(record.seq))
 	spec_array=np.array(species,dtype=str)
 
 summary_align=AlignInfo.SummaryInfo(species_align)
