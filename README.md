@@ -1,6 +1,7 @@
 Hello. I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
 I will explain each of the four part python script as follows:
+
 **Step1_DownloadFasta.py: **
 Users will be prompted to enter (1) No of fasta entries to download, (2) Organism of interest or NCBI taxa ID, and (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
