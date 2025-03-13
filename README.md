@@ -20,11 +20,11 @@ Use NCBI advanced search tool to get search strings to download highly specific 
 
 Example 1:
 
-(Human Papillomavirus[Organism]) AND E6[Gene Name] 
+>(Human Papillomavirus[Organism]) AND E6[Gene Name] 
 
 Example 2:
 
-(Dengue Virus[Organism]) AND NS1[Gene Name] 
+>(Dengue Virus[Organism]) AND NS1[Gene Name] 
 
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
@@ -32,11 +32,11 @@ Replace the fasta header of the file with the target strain name, so that Step2_
 
 Example 1:
 
->HPV16 (fasta header)
+> >HPV16 (fasta header)
 
 Example 2:
 
->DENV1 (fasta header)
+> >DENV1 (fasta header)
 
 <br />
 
