@@ -54,9 +54,10 @@ Users will be prompted to enter
 
 To screen for potential Taqman probe.
 
-It is recommended to set at least 5 deg C higher for the probe relative to the primer pair.
+It is recommended to set the melting temperature to be at least 5 deg C higher for the probe relative to the primer pair.
 
 Please also check for secondary structure (hairpin) using other tools like OligoAnalyzer
+
 https://www.idtdna.com/pages/tools/oligoanalyzer
 
 <br />
