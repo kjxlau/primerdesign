@@ -72,9 +72,9 @@ https://www.idtdna.com/pages/tools/oligoanalyzer
 
 <br />
 
-Have fun developing your own PCR test kit!
+Have fun developing your own PCR test kit.
 
-For any queries, you can drop me an email at kennyjxlau@gmail.com
+For any queries, you can reach out to me via email at kennyjxlau@gmail.com
 
 
 <br />
