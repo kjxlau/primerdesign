@@ -4,7 +4,7 @@ Entrez.email = "kennyjxlau@gmail.com"
 Entrez.api_key = "6b675e217b0d870e6ca896cd257b4c073708"
 
 no_of_records=input("Enter No of Records to download: ")
-organism=input("Enter organism of interest: ")
+organism=input("Enter organism of interest (search strings): ")
 
 search_term=organism
 print(search_term)
