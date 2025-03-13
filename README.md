@@ -24,6 +24,8 @@ eg. (Human Papillomavirus[Organism]) AND E6[Gene Name]
 
 Label the fasta header of the file with the target strain name, so that Step2_FindConsensusSeq.py can identify which sequences to look at to shortlist primer sequences.
 
+eg. HPV16
+
 <br />
 
 **Step2_FindConsensusSeq.py:**
@@ -33,6 +35,8 @@ Users will be prompted to enter
 (1) Alignment file from step 1
 
 (2) The targeted serotype/species/strain
+
+eg. HPV16
 
 (3) No of degenerate bases 
 
