@@ -5,6 +5,7 @@ Hello. I have designed a series of 4-part python scripts to generate candidate p
 I will explain each of the four part python script as follows:
 
 <br />
+
 **Step1_DownloadFasta.py:**
 
 Users will be prompted to enter 
@@ -15,6 +16,7 @@ Users will be prompted to enter
 
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
+<br />
 
 **Step2_FindConsensusSeq.py:**
 
@@ -28,6 +30,7 @@ Users will be prompted to enter
 
 (4) The percent cutoff for no of mutations allowed acrossed sequences 
 
+<br />
 
 **Step3_PrimerScreening.py:**
 
@@ -41,6 +44,7 @@ Users will be prompted to enter
 
 To screen for potential primer sets
 
+<br />
 
 **Step4_ProbeSelect.py:**
 
@@ -55,7 +59,7 @@ Have fun developing your own test PCR probes!
 For any queries, you can drop me an email at kennyjxlau@gmail.com
 
 
-
+<br />
 Best regards,
 
 Kenny
