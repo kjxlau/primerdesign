@@ -16,7 +16,7 @@ Users will be prompted to enter
 
 https://www.ncbi.nlm.nih.gov/nuccore/advanced 
 
-Use NCBI advanced tool to get search strings to get highly specific sequences of interest
+Use NCBI advanced search tool to get search strings to download highly specific sequences of interest
 
 eg. (Human Papillomavirus[Organism]) AND E6[Gene Name] 
 
