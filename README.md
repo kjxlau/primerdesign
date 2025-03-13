@@ -30,6 +30,8 @@ Users will be prompted to enter
 
 (4) The percent cutoff for no of mutations allowed acrossed sequences 
 
+The script will shortlist all potential sequences that are good primer candidates.
+
 <br />
 
 **Step3_PrimerScreening.py:**
