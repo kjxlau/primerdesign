@@ -1,4 +1,4 @@
-**PRIMER DESIGN TOOL**
+<h1>**PRIMER DESIGN TOOL**</h1>
 
 Hello. I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
