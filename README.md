@@ -22,9 +22,9 @@ eg. (Human Papillomavirus[Organism]) AND E6[Gene Name]
 
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
-Label the fasta header of the file with the target strain name, so that Step2_FindConsensusSeq.py can identify which sequences to look at to shortlist primer sequences.
+Replace the fasta header of the file with the target strain name, so that Step2_FindConsensusSeq.py can identify which sequences to look at to shortlist primer sequences.
 
-eg. HPV16
+eg. >HPV16 (fasta header)
 
 <br />
 
