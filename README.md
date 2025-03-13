@@ -18,13 +18,25 @@ https://www.ncbi.nlm.nih.gov/nuccore/advanced
 
 Use NCBI advanced search tool to get search strings to download highly specific sequences of interest
 
-eg. (Human Papillomavirus[Organism]) AND E6[Gene Name] 
+Example 1:
+
+(Human Papillomavirus[Organism]) AND E6[Gene Name] 
+
+Example 2:
+
+(Dengue Virus[Organism]) AND NS1[Gene Name] 
 
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
 Replace the fasta header of the file with the target strain name, so that Step2_FindConsensusSeq.py script can identify which sequences to look at to shortlist primer sequences.
 
-eg. >HPV16 (fasta header)
+Example 1:
+
+>HPV16 (fasta header)
+
+Example 2:
+
+>DENV1 (fasta header)
 
 <br />
 
@@ -36,7 +48,13 @@ Users will be prompted to enter
 
 (2) The targeted serotype/species/strain
 
-eg. HPV16
+Example 1:
+
+HPV16
+
+Example 2:
+
+DENV1
 
 (3) No of degenerate bases 
 
