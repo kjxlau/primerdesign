@@ -14,7 +14,7 @@ Users will be prompted to enter
 
 (2) Organism of interest or NCBI taxa ID
 
-Use advanced tool to get search strings from https://www.ncbi.nlm.nih.gov/nuccore/advanced
+Use advanced tool to get search strings from https://www.ncbi.nlm.nih.gov/nuccore/advanced to get highly specific sequences of interest
 
 eg. (Human Papillomavirus[Organism]) AND E6[Gene Name] 
 
