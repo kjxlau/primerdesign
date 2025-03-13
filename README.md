@@ -1,9 +1,10 @@
+**PRIMER DESIGN TOOL**
 Hello. I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
 I will explain each of the four part python script as follows:
 
 
-**Step1_DownloadFasta.py: **
+**Step1_DownloadFasta.py:**
 
 Users will be prompted to enter 
 
@@ -14,7 +15,7 @@ Users will be prompted to enter
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
 
-**Step2_FindConsensusSeq.py: **
+**Step2_FindConsensusSeq.py:**
 
 Users will be prompted to enter 
 
@@ -27,7 +28,7 @@ Users will be prompted to enter
 (4) The percent cutoff for no of mutations allowed acrossed sequences 
 
 
-**Step3_PrimerScreening.py: **
+**Step3_PrimerScreening.py:**
 
 Users will be prompted to enter 
 
@@ -40,7 +41,7 @@ Users will be prompted to enter
 To screen for potential primer sets
 
 
-**Step4_ProbeSelect.py: **
+**Step4_ProbeSelect.py:**
 
 Users will be prompted to enter 
 
