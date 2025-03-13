@@ -54,6 +54,8 @@ Users will be prompted to enter
 
 To screen for potential Taqman probe.
 
+It is recommended to set at least 5-10 deg C higher for the probe relative to the primer pair.
+
 <br />
 
 Have fun developing your own test PCR probes!
