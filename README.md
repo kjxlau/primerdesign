@@ -50,11 +50,11 @@ Users will be prompted to enter
 
 Example 1:
 
-HPV16
+>HPV16
 
 Example 2:
 
-DENV1
+>DENV1
 
 (3) No of degenerate bases 
 
