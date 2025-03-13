@@ -16,6 +16,8 @@ Users will be prompted to enter
 
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
+Label the fasta header of the file with the target strain name, so that Step2_FindConsensusSeq.py can identify which sequences to look at to shortlist primer sequences.
+
 <br />
 
 **Step2_FindConsensusSeq.py:**
@@ -28,7 +30,7 @@ Users will be prompted to enter
 
 (3) No of degenerate bases 
 
-(4) The percent cutoff for no of mutations allowed acrossed sequences 
+(4) The percent cutoff for no of mutations allowed acrossed sequences (recommended: <0.2)
 
 The script will shortlist all potential sequences that are good primer candidates.
 
