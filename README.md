@@ -14,7 +14,9 @@ Users will be prompted to enter
 
 (2) Organism of interest or NCBI taxa ID
 
-eg. Human Papillomavirus [Organism] and E6 [Gene]
+Use advanced tool to get search strings from https://www.ncbi.nlm.nih.gov/nuccore/advanced
+
+eg. (Human Papillomavirus[Organism]) AND E6[Gene Name] 
 
 (3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
 
