@@ -32,11 +32,11 @@ Replace the fasta header of the file with the target strain name, so that Step2_
 
 Example 1:
 
-> >HPV16 (fasta header)
+> \>HPV16 (fasta header)
 
 Example 2:
 
-> >DENV1 (fasta header)
+> \>DENV1 (fasta header)
 
 <br />
 
