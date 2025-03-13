@@ -1,4 +1,5 @@
 **PRIMER DESIGN TOOL**
+
 Hello. I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
 I will explain each of the four part python script as follows:
@@ -52,6 +53,7 @@ To screen for potential Taqman probe.
 Have fun developing your own test PCR probes!
 
 For any queries, you can drop me an email at kennyjxlau@gmail.com
+
 
 
 Best regards,
