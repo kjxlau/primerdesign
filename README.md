@@ -95,7 +95,7 @@ https://www.idtdna.com/pages/tools/oligoanalyzer
 <br />
 
 Have fun developing your own PCR test kit. 
-Step 1 to step 4 can be orchestrated using multi-agentic approach as demonstrated here:
+Step 1 to step 4 can be orchestrated using a multi-agentic approach as demonstrated here:
 [Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py)
 
 For any queries, you can reach out to me via email at kennyjxlau@gmail.com
