@@ -101,18 +101,28 @@ Step 1 to step 4 can be orchestrated using a multi-agentic approach as demonstra
 This can be further interfaced with a local chatbot, Ollama
 
 <br />
+
 Please install ollama: pip install ollama
+
 <br />
+
 Load llama3: ollama pull llama3
+
 <br />
+
 Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_chatbot.py) to initialize chatbot
+
 <br />
+
 Start chat: 
 >Design a TaqMan assay for Internal Transcribed Spacer gene in Penicillium citrinum
+
 <br />
+
 For any queries, you can reach out to me via email at kennyjxlau@gmail.com
 
 <br />
+
 Best regards,
 
 Kenny
