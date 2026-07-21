@@ -102,7 +102,7 @@ This can be further interfaced with a local chatbot, Ollama
 
 <br />
 
-To install requirements:
+To install required python packages and libraries:
 >pip install -r requirements.txt
 
 <br />
