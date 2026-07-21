@@ -41,7 +41,7 @@ class SearchAgent:
         except Exception as e:
             print(f"[SearchAgent]: Error - {e}")
             return None
-            
+
 # --- AGENT 2: THE ALIGNMENT AGENT ---
 class AlignmentAgent:
     def __init__(self, email):
@@ -116,7 +116,7 @@ class ScreeningAgent:
 # --- AGENT 5: THE PROBE AGENT (qPCR Specialist) ---
 class ProbeAgent:
     """Specializes in finding internal probes between primer pairs."""
-    def select_probes(self, df_candidates, df_pairs, min_probe_tm, max_results=10):
+    def select_probes(self, df_candidates, df_pairs, min_probe_tm, max_results=30):
         print(f"[ProbeAgent]: Screening internal probes for {len(df_pairs)} primer pairs...")
         # 1. Get candidates that meet probe Tm requirements
         probe_candidates = df_candidates[df_candidates['Tm'] >= min_probe_tm]
