@@ -18,7 +18,7 @@ class SearchAgent:
         Entrez.api_key = api_key
 
     def fetch_sequences(self, organism, gene, count):
-        query = f"({organism}[ORGANISM]) AND {gene}[Gene Name] AND NOT genome"
+        query = f"({organism}[ORGANISM]) AND {gene}[TITL] AND NOT genome"
         print(f"\n[SearchAgent]: Querying NCBI for: {query}")
         try:
             handle = Entrez.esearch(db="nucleotide", term=query, retmax=count)
@@ -132,6 +132,7 @@ class ProbeAgent:
         return pd.DataFrame(final_sets)
 
 # --- THE MASTER ORCHESTRATOR ---
+# --- THE MASTER ORCHESTRATOR ---
 class MasterOrchestrator:
     def __init__(self):
         self.searcher = SearchAgent(os.getenv("NCBI_EMAIL"), os.getenv("NCBI_API_KEY"))
@@ -155,24 +156,40 @@ class MasterOrchestrator:
             print(f"[Master]: Error - NCBI returned less than 2 sequences. Cannot perform alignment.")
             return None
 
+        # 3. Perform Alignment
         aln = self.aligner.align(raw)
-        if not aln: return
+        if not aln: 
+            return None
+            
+        # Save the alignment to a FASTA file 
+        aln_fn = f"{org}_{gene}_alignment.fasta".replace(" ", "_").lower()
+        with open(aln_fn, "w") as f:
+            f.write(aln)
+        print(f"[Master]: SUCCESS. Alignment saved to {aln_fn}")
+                
+        # 4. Analyze candidates
+        candidates = self.analyst.calculate_stats(aln, kw, 2, 0.05)
         
-        candidates = self.analyst.calculate_stats(aln, kw, 2, 0.01)
+        if candidates.empty:
+            print("[Master]: No conserved candidate regions found. Try relaxing the conservation cutoff.")
+            return None
+
+        # 5. Screen pairs
         pairs = self.screener.screen_pairs(candidates, pcr_params['min_amp'], pcr_params['max_amp'], pcr_params['min_tm'], pcr_params['max_diff'])
         
         if pairs.empty:
-            print("[Master]: No primer pairs found."); return
+            print("[Master]: No primer pairs found."); return None
 
-        # New Agent 5 Step
+        # 6. Select Probes
         final_df = self.probe_agent.select_probes(candidates, pairs, pcr_params['min_probe_tm'])
 
+        # 7. Output Final CSV
         if not final_df.empty:
-            fn = f"{org}_{gene}_probe_sets.csv".replace(" ","_").lower()
-            final_df.to_csv(fn, index=False)
-            print(f"\n[Master]: SUCCESS. TaqMan sets saved to {fn}")
+            csv_fn = f"{org}_{gene}_probe_sets.csv".replace(" ","_").lower()
+            final_df.to_csv(csv_fn, index=False)
+            print(f"[Master]: SUCCESS. TaqMan sets saved to {csv_fn}")
             print(final_df.head(5))
-            return fn
+            return csv_fn
         else:
             print("[Master]: No valid probes found between the primer pairs.")
             return None
