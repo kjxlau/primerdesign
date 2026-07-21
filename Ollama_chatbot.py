@@ -2,6 +2,7 @@ import os
 import ollama
 import json
 from Multiagent_orchestrator import MasterOrchestrator 
+
 # --- THE OLLAMA BRAIN ---
 class OllamaDirector:
     def __init__(self, model="llama3"):
