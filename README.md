@@ -115,7 +115,7 @@ Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_
 <br />
 
 Start chat: 
->Design a TaqMan assay for Internal Transcribed Spacer gene in Penicillium citrinum
+>Design a TaqMan assay for 16S rRNA gene in Bacillus subtilis
 
 <br />
 
