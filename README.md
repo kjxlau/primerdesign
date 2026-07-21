@@ -126,6 +126,11 @@ Start chat:
 
 <br />
 
+The app can also be run using Qwen2.5-1.5B LLM at:
+https://huggingface.co/spaces/kennylau91/primerdesign
+
+<br />
+
 For any queries, you can reach out to me via email at kennyjxlau@gmail.com
 
 <br />
