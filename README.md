@@ -1,6 +1,6 @@
 <h1>PRIMER DESIGN TOOL</h1>
 
-Hello. I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
+I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
 I will explain each of the 4-part python scripts as follows:
 
@@ -97,6 +97,13 @@ https://www.idtdna.com/pages/tools/oligoanalyzer
 Have fun developing your own PCR test kit. 
 Step 1 to step 4 can be orchestrated using a multi-agentic approach as demonstrated here:
 [Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py)
+
+This can be further interfaced with a local chatbot, Ollama
+Please install ollama: pip install ollama
+Load llama3: ollama pull llama3
+Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_chatbot.py) to initialize chatbot
+Start chat: 
+>Design a TaqMan assay for Internal Transcribed Spacer gene in Penicillium citrinum
 
 For any queries, you can reach out to me via email at kennyjxlau@gmail.com
 
