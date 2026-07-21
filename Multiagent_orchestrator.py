@@ -18,29 +18,31 @@ class SearchAgent:
         Entrez.api_key = api_key
 
     def fetch_sequences(self, organism, gene, count):
-        # 1. Expand standard abbreviations if it's 16S
-        if "16s rrna" in gene.lower():
-            gene_query = '("16S ribosomal RNA"[Title] OR "16S rRNA"[Title] OR "16S"[Gene])'
-        else:
-            # For standard genes (e.g. gyrB, recA), check both Gene and Title annotations
-            gene_query = f'("{gene}"[Gene] OR "{gene}"[Title])'
-
-        # 2. Build the robust query
-        # [SLEN] strictly limits results to 100bp - 15,000bp, completely eliminating whole genomes (millions of bp)
-        # without needing fragile "NOT genome" text matching.
-        query = f'"{organism}"[Organism] AND {gene_query} AND 100:15000[SLEN] NOT "partial"[Title]'
+        gene_lower = gene.lower()
         
-        print(f"\n[SearchAgent]: Querying NCBI for: {query}")
+        # 1. 16S rRNA logic
+        if "16s" in gene_lower:
+            gene_query = '("16S ribosomal RNA"[Title] OR "16S rRNA"[Title] OR "16S"[Gene])'
+            
+        # 2. NEW: ITS (Internal Transcribed Spacer) logic
+        elif "its" in gene_lower or "internal transcribed spacer" in gene_lower:
+            gene_query = '("internal transcribed spacer"[Title] OR "ITS"[Title] OR "ITS1"[Title] OR "ITS2"[Title])'
+            
+        # 3. Fallback for all other standard genes (e.g., gyrB, recA)
+        else:
+            gene_query = f'("{gene}"[Gene] OR "{gene}"[Title] OR "{gene}"[All Fields])'
+        
+        # Robust SLEN query to avoid whole genomes
+        query = f'"{organism}"[Organism] OR "{organism}"[All Fields] OR {gene_query} AND 100:15000[SLEN] NOT "partial"[Title]'
+        
         try:
             handle = Entrez.esearch(db="nucleotide", term=query, retmax=count)
             ids = Entrez.read(handle)["IdList"]
-            if not ids: 
-                return None
+            if not ids: return None
             fetch_handle = Entrez.efetch(db="nucleotide", id=",".join(ids), rettype="fasta", retmode="text")
             return fetch_handle.read()
         except Exception as e:
-            print(f"[SearchAgent]: Error - {e}")
-            return None
+            raise Exception(f"NCBI Search Error: {e}")
 
 # --- AGENT 2: THE ALIGNMENT AGENT ---
 class AlignmentAgent:
@@ -116,32 +118,49 @@ class ScreeningAgent:
 # --- AGENT 5: THE PROBE AGENT (qPCR Specialist) ---
 class ProbeAgent:
     """Specializes in finding internal probes between primer pairs."""
-    def select_probes(self, df_candidates, df_pairs, min_probe_tm, max_results=30):
+    def select_probes(self, df_candidates, df_pairs, min_probe_tm, max_results=10, min_spacing=50):
         print(f"[ProbeAgent]: Screening internal probes for {len(df_pairs)} primer pairs...")
-        # 1. Get candidates that meet probe Tm requirements
         probe_candidates = df_candidates[df_candidates['Tm'] >= min_probe_tm]
         final_sets = []
-        count = 0
+        
+        # 1. Sort primer pairs by the most conserved first
+        df_pairs['Cons_Avg_Pairs'] = (df_pairs['Cons_F'] + df_pairs['Cons_R']) / 2
+        sorted_pairs = df_pairs.sort_values(by='Cons_Avg_Pairs', ascending=False)
 
-        for p_idx, pair in df_pairs.iterrows():
+        for p_idx, pair in sorted_pairs.iterrows():
+            # 2. SPATIAL FILTER: Check if this pair is too close to an already selected assay
+            too_close = False
+            for selected in final_sets:
+                if abs(pair['Start'] - selected['Start']) < min_spacing:
+                    too_close = True
+                    break
+            
+            # Skip this primer pair if it's right next to an assay we already saved
+            if too_close:
+                continue
+
+            # 3. Find ONE internal probe for this spatially diverse primer pair
+            probe_found = False
             for c_idx, cand in probe_candidates.iterrows():
-                # Logic: Probe must start after Fwd ends, and end before Rev starts
                 probe_start = cand['Location']
                 probe_end = cand['Location'] + cand['AlignWidth']
                 fwd_end = pair['Start'] + pair['AlignWidthF']
                 rev_start = pair['End'] - pair['AlignWidthR']
 
                 if probe_start > fwd_end and probe_end < rev_start:
-                    count += 1
                     final_sets.append({
                         'Forward': pair['Forward'], 'Reverse': pair['Reverse'], 'Probe': cand['Sequence'],
                         'Start': pair['Start'], 'End': pair['End'], 'PLoc': cand['Location'],
-                        'TmF': pair['TmF'], 'TmR': pair['TmR'], 'PTm': cand['Tm'],
-                        'Ampsize': pair['Ampsize'], 'Conservation_Avg': (pair['Cons_F'] + pair['Cons_R'] + cand['Conservation'])/3
+                        'TmF': pair['TmF'], 'TmR': pair['TmR'], 'PTm': cand['Tm'], 'Ampsize': pair['Ampsize'], 
+                        'Cons_Avg': round((pair['Cons_F'] + pair['Cons_R'] + cand['Conservation'])/3, 1)
                     })
-                    if count >= max_results: break
-            if count >= max_results: break
+                    probe_found = True
+                    break # Break out of the probe loop; move to the next primer pair!
             
+            # 4. Stop if we have successfully gathered a diverse set of 10 assays
+            if probe_found and len(final_sets) >= max_results:
+                break
+                
         return pd.DataFrame(final_sets)
 
 # --- THE MASTER ORCHESTRATOR ---
