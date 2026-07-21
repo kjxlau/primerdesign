@@ -1,6 +1,6 @@
 <h1>PRIMER DESIGN TOOL</h1>
 
-I have designed a series of 4-part python scripts to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
+This is a series of 4-part python scripts that can be used to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
 
 I will explain each of the 4-part python scripts as follows:
 
