@@ -18,7 +18,7 @@ class SearchAgent:
         Entrez.api_key = api_key
 
     def fetch_sequences(self, organism, gene, count):
-        query = f"({organism}[ORGANISM]) AND {gene}[TITL] AND NOT genome"
+        query = f"({organism}[ORGANISM]) AND {gene}[GENE NAME] AND NOT genome"
         print(f"\n[SearchAgent]: Querying NCBI for: {query}")
         try:
             handle = Entrez.esearch(db="nucleotide", term=query, retmax=count)
