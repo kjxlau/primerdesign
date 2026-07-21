@@ -18,7 +18,7 @@ class SearchAgent:
         Entrez.api_key = api_key
 
     def fetch_sequences(self, organism, gene, count):
-        query = f"({organism}[ORGANISM]) AND {gene}[GENE NAME] AND NOT genome"
+        query = f"({organism}[ORGANISM]) AND {gene}[Gene Name] AND NOT genome"
         print(f"\n[SearchAgent]: Querying NCBI for: {query}")
         try:
             handle = Entrez.esearch(db="nucleotide", term=query, retmax=count)
@@ -39,6 +39,9 @@ class AlignmentAgent:
         print("[AlignmentAgent]: Submitting to EBI Clustal Omega...")
         try:
             job_res = requests.post(f"{self.url}/run", data={'email': self.email, 'sequence': fasta_content, 'stype': 'dna', 'outfmt': 'fa'})
+            if not job_res.ok:
+                print(f"[AlignmentAgent]: API Error - {job_res.text}")
+                return None
             job_id = job_res.text
             while True:
                 status = requests.get(f"{self.url}/status/{job_id}").text
@@ -59,7 +62,7 @@ class AnalystAgent:
         target_list = [r for r in alignment if target_kw.lower() in r.description.lower()]
         target_msa = MultipleSeqAlignment(target_list) if target_list else alignment
         summary = AlignInfo.SummaryInfo(target_msa)
-        consensus = str(summary.dumb_consensus(threshold=0.7))
+        consensus = str(summary.dumb_consensus(threshold=0.7, ambiguous='N'))
         results = []
         for width in range(20, 31):
             for i in range(len(consensus) - width + 1):
@@ -69,7 +72,7 @@ class AnalystAgent:
                 ratio = matches / len(target_msa)
                 if ratio >= (1 - cutoff):
                     results.append({
-                        'Sequence': window, 'Location': i, 'Length': len(window),
+                        'Sequence': window, 'Location': i, 'Length': len(window), 'AlignWidth': width, 
                         'GC': round((window.count('G') + window.count('C')) / len(window) * 100, 1),
                         'Tm': round(mt.Tm_NN(Seq(window)), 1), 'Conservation': round(ratio * 100, 1)
                     })
@@ -86,9 +89,10 @@ class ScreeningAgent:
                 fwd, rev = df_candidates.loc[i], df_candidates.loc[j]
                 amplicon_size = (rev['Location'] + rev['Length']) - fwd['Location']
                 if min_amp <= amplicon_size <= max_amp and abs(fwd['Length'] - rev['Length']) <= max_len_diff:
-                    if rev['Location'] > (fwd['Location'] + fwd['Length']):
+                    if rev['Location'] > (fwd['Location'] + fwd['AlignWidth']):
                         pairs.append({
                             'Forward': fwd['Sequence'], 'Reverse': str(Seq(rev['Sequence']).reverse_complement()),
+                            'AlignWidthF': fwd['AlignWidth'], 'AlignWidthR': rev['AlignWidth'],
                             'Start': fwd['Location'], 'End': rev['Location'] + rev['Length'],
                             'LenF': fwd['Length'], 'LenR': rev['Length'], 'Ampsize': amplicon_size,
                             'TmF': fwd['Tm'], 'TmR': rev['Tm'], 'GCF': fwd['GC'], 'GCR': rev['GC'],
@@ -110,9 +114,9 @@ class ProbeAgent:
             for c_idx, cand in probe_candidates.iterrows():
                 # Logic: Probe must start after Fwd ends, and end before Rev starts
                 probe_start = cand['Location']
-                probe_end = cand['Location'] + cand['Length']
-                fwd_end = pair['Start'] + pair['LenF']
-                rev_start = pair['End'] - pair['LenR']
+                probe_end = cand['Location'] + cand['AlignWidth']
+                fwd_end = pair['Start'] + pair['AlignWidthF']
+                rev_start = pair['End'] - pair['AlignWidthR']
 
                 if probe_start > fwd_end and probe_end < rev_start:
                     count += 1
@@ -137,12 +141,24 @@ class MasterOrchestrator:
         self.probe_agent = ProbeAgent()
 
     def execute(self, org, gene, count, kw, pcr_params):
+        # 1. Enforce a minimum count for Multiple Sequence Alignment
+        if not isinstance(count, int) or count < 2:
+            print(f"[Master]: 'count' of {count} is too low for alignment. Defaulting to 10.")
+            count = 10
+
         raw = self.searcher.fetch_sequences(org, gene, count)
-        if not raw: return
+        if not raw: 
+            return None
+            
+        # 2. Validate that NCBI actually returned multiple FASTA sequences
+        if raw.count('>') < 2:
+            print(f"[Master]: Error - NCBI returned less than 2 sequences. Cannot perform alignment.")
+            return None
+
         aln = self.aligner.align(raw)
         if not aln: return
         
-        candidates = self.analyst.calculate_stats(aln, kw, 2, 0.001)
+        candidates = self.analyst.calculate_stats(aln, kw, 2, 0.01)
         pairs = self.screener.screen_pairs(candidates, pcr_params['min_amp'], pcr_params['max_amp'], pcr_params['min_tm'], pcr_params['max_diff'])
         
         if pairs.empty:
@@ -156,8 +172,10 @@ class MasterOrchestrator:
             final_df.to_csv(fn, index=False)
             print(f"\n[Master]: SUCCESS. TaqMan sets saved to {fn}")
             print(final_df.head(5))
+            return fn
         else:
             print("[Master]: No valid probes found between the primer pairs.")
+            return None
 
 if __name__ == "__main__":
     pcr = {
