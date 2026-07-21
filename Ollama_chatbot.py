@@ -16,21 +16,35 @@ class OllamaDirector:
         You are a Senior Bioinformatician. Extract parameters from this request: "{user_input}"
         Return ONLY a JSON object with these keys: 
         organism, gene, count, target_kw, min_amp, max_amp, min_tm, min_probe_tm.
-        If a value is missing, use these defaults: 
-        count: 10, target_kw: same as organism, min_amp: 100, max_amp: 300, min_tm: 55, min_probe_tm: 65.
         
-        Example Output: {{"organism": "Bacillus subtilis", "gene": "16S", "count": 10, ...}}
+        Rules:
+        - If 'count' is missing or unspecified, default to 15.
+        - 'count' MUST NEVER be less than 5 (we need multiple sequences for alignment).
+        - target_kw defaults to the organism name.
         """
         
         print(f"[OllamaDirector]: Thinking...")
         response = ollama.generate(model=self.model, prompt=prompt)
-        
-        # Clean the response string to ensure it's valid JSON
         json_str = response['response'].strip()
-        # Find the first '{' and last '}' in case the model added conversational text
-        json_str = json_str[json_str.find("{"):json_str.rfind("}")+1]
-        
-        return json.loads(json_str)
+        try:
+            # Safely extract block
+            json_str = json_str[json_str.find("{"):json_str.rfind("}")+1]
+            data = json.loads(json_str)
+            
+            # Guarantee all keys exist
+            return {
+                "organism": data.get("organism", "Unknown_Org"),
+                "gene": data.get("gene", "Unknown_Gene"),
+                "count": data.get("count", 10),
+                "target_kw": data.get("target_kw", data.get("organism", "")),
+                "min_amp": data.get("min_amp", 100),
+                "max_amp": data.get("max_amp", 300),
+                "min_tm": data.get("min_tm", 55),
+                "min_probe_tm": data.get("min_probe_tm", 60)
+            }
+        except Exception as e:
+            print(f"[OllamaDirector]: Error parsing JSON - {e}")
+            return None
 
     def explain_results(self, csv_file):
         """
