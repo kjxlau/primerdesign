@@ -67,7 +67,7 @@ if __name__ == "__main__":
             'min_amp': params.get('min_amp', 100),
             'max_amp': params.get('max_amp', 300),
             'min_tm': params.get('min_tm', 55),
-            'min_probe_tm': params.get('min_probe_tm', 65),
+            'min_probe_tm': params.get('min_probe_tm', 60),
             'max_diff': 5
         }
         
