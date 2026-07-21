@@ -102,15 +102,15 @@ This can be further interfaced with a local chatbot, Ollama
 
 <br />
 
-Please install ollama: pip install ollama
+To install ollama: pip install ollama
 
 <br />
 
-Load llama3: ollama pull llama3
+To load llama3: ollama pull llama3
 
 <br />
 
-Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_chatbot.py) to initialize chatbot
+Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_chatbot.py) in the same directory as [Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py) to initialize chatbot.
 
 <br />
 
