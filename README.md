@@ -58,7 +58,7 @@ Example 2:
 
 (3) No of degenerate bases 
 
-(4) The percent cutoff for no of mutations allowed acrossed sequences (recommended: <0.2)
+(4) The percent cutoff for no of mutations allowed acrossed sequences (recommended: < 0.05)
 
 The script will shortlist all potential sequences that are good primer candidates.
 
