@@ -18,17 +18,30 @@ class SearchAgent:
         Entrez.api_key = api_key
 
     def fetch_sequences(self, organism, gene, count):
-        query = f"({organism}[ORGANISM]) AND {gene}[TITL] AND NOT genome"
+        # 1. Expand standard abbreviations if it's 16S
+        if "16s rrna" in gene.lower():
+            gene_query = '("16S ribosomal RNA"[Title] OR "16S rRNA"[Title] OR "16S"[Gene])'
+        else:
+            # For standard genes (e.g. gyrB, recA), check both Gene and Title annotations
+            gene_query = f'("{gene}"[Gene] OR "{gene}"[Title])'
+
+        # 2. Build the robust query
+        # [SLEN] strictly limits results to 100bp - 15,000bp, completely eliminating whole genomes (millions of bp)
+        # without needing fragile "NOT genome" text matching.
+        query = f'"{organism}"[Organism] AND {gene_query} AND 100:15000[SLEN] NOT "partial"[Title]'
+        
         print(f"\n[SearchAgent]: Querying NCBI for: {query}")
         try:
             handle = Entrez.esearch(db="nucleotide", term=query, retmax=count)
             ids = Entrez.read(handle)["IdList"]
-            if not ids: return None
+            if not ids: 
+                return None
             fetch_handle = Entrez.efetch(db="nucleotide", id=",".join(ids), rettype="fasta", retmode="text")
             return fetch_handle.read()
         except Exception as e:
-            print(f"[SearchAgent]: Error - {e}"); return None
-
+            print(f"[SearchAgent]: Error - {e}")
+            return None
+            
 # --- AGENT 2: THE ALIGNMENT AGENT ---
 class AlignmentAgent:
     def __init__(self, email):
