@@ -13,22 +13,14 @@ class OllamaDirector:
         Uses Ollama to turn a sentence into a JSON of biological parameters.
         """
         prompt = f"""
-        You are a strict data extraction system. Extract parameters from this request: "{user_input}"
-        Return ONLY a valid JSON object. 
-        Do NOT include any markdown formatting like ```json.
-        Do NOT include any conversational text.
-        All keys and string values MUST be enclosed in strict DOUBLE QUOTES. No trailing commas.
+        Extract parameters from this scientific request: "{user_input}"
         
-        Keys to include: 
-        "organism", "gene", "count", "target_kw", "min_amp", "max_amp", "min_tm", "min_probe_tm".
+        RULES for Biological Names:
+        - "organism": Extract the Genus ONLY. (e.g., if the user asks for "Escherichia coli", organism is "Escherichia").
+        - "target_kw": Extract the specific Species epithet/name. (e.g., if the user asks for "Escherichia coli", target_kw is "coli").
         
-        Rules: 
-        - If 'count' is missing, default to 15. It MUST NEVER be less than 5.
-        - 'target_kw' defaults to the organism name.
-        - Default PCR params: min_amp: 100, max_amp: 300, min_tm: 55, min_probe_tm: 60.
-        
-        Example Output: 
-        {{"organism": "Bacillus subtilis", "gene": "16S rRNA", "count": 15, "target_kw": "Bacillus subtilis", "min_amp": 100, "max_amp": 300, "min_tm": 55, "min_probe_tm": 60}}
+        Return ONLY a valid JSON object. Do NOT include markdown formatting or backticks. All keys and strings MUST be in double quotes.
+        Keys to include: "organism", "gene", "count", "target_kw", "min_amp", "max_amp", "min_tm", "min_probe_tm".
         """
         
         print(f"[OllamaDirector]: Thinking...")
