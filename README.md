@@ -103,18 +103,21 @@ This can be further interfaced with a local chatbot, Ollama
 <br />
 
 To install required python packages and libraries:
->pip install -r requirements.txt
-
+```
+pip install -r requirements.txt
+```
 <br />
 
 To install ollama: 
->pip install ollama
-
+```
+pip install ollama
+```
 <br />
 
 To load llama3: 
->ollama pull llama3
-
+```
+ollama pull llama3
+```
 <br />
 
 Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_chatbot.py) in the same directory as [Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py) to initialize chatbot.
