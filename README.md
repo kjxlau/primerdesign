@@ -107,7 +107,7 @@ https://www.idtdna.com/pages/tools/oligoanalyzer
 <br />
 
 Have fun developing your own PCR test kit. 
-Step 1 to step 4 can be orchestrated using a multi-agentic approach as demonstrated here:
+Step 1 to step 5 can be orchestrated using a multi-agentic approach as demonstrated here:
 [Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py)
 
 This can be further interfaced with a local chatbot, Ollama
@@ -137,7 +137,7 @@ Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_
 <br />
 
 Start chat: 
->Design a TaqMan assay for 16S rRNA gene in Bacillus subtilis
+>Design a TaqMan and LAMP assay for 16S rRNA gene in Bacillus subtilis
 
 <br />
 
