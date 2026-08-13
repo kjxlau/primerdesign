@@ -91,10 +91,10 @@ It is recommended to set the melting temperature to be at least 5 deg C higher r
 **Step5_LAMPPrimers.py:**
 
 Unlike conventional PCR, LAMP primer design requires identifying 6 distinct target regions on the DNA sequence even though the final assay may only use four primary primers.
-> \>F3 (Forward Outer Primer): Corresponds directly to the F3 region
-> \>FIP (Forward Internal Primer): Consists of F1c + F2, where F1c is the reverse complement of F1
-> \>BIP (Backward Internal Primer): Consists of B1c + B2, where B1c is the reverse complement of B1
-> \>B3 (Backward Outer Primer): Reverse complement of the B3c region
+<br />F3 (Forward Outer Primer): Corresponds directly to the F3 region
+<br />FIP (Forward Internal Primer): Consists of F1c + F2, where F1c is the reverse complement of F1
+<br />BIP (Backward Internal Primer): Consists of B1c + B2, where B1c is the reverse complement of B1
+<br />B3 (Backward Outer Primer): Reverse complement of the B3c region
 
 The script first sorts candidate primers according to their positions on the target sequence. It then performs a progressive search using the spacing constraints defined for the LAMP primer design.
 
