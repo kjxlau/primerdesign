@@ -16,7 +16,7 @@ d_B2_B3_min, d_B2_B3_max = 0, 60
 
 print("Filtering and searching for LAMP sets...")
 
-# 2. Filter by Tm and sort by Location (CRITICAL for performance)
+# 2. Filter by Tm and sort by Location 
 df_filtered = df[df["Tm"] >= minprimertm].sort_values("Location").reset_index(drop=True)
 records = df_filtered.to_dict('records')
 n = len(records)
