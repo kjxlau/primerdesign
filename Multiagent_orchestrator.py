@@ -19,20 +19,13 @@ class SearchAgent:
 
     def fetch_sequences(self, organism, gene, count):
         gene_lower = gene.lower()
-        
-        # 1. 16S rRNA logic
         if "16s" in gene_lower:
             gene_query = '("16S ribosomal RNA"[Title] OR "16S rRNA"[Title] OR "16S"[Gene])'
-            
-        # 2. NEW: ITS (Internal Transcribed Spacer) logic
         elif "its" in gene_lower or "internal transcribed spacer" in gene_lower:
             gene_query = '("internal transcribed spacer"[Title] OR "ITS"[Title] OR "ITS1"[Title] OR "ITS2"[Title])'
-            
-        # 3. Fallback for all other standard genes (e.g., gyrB, recA)
         else:
             gene_query = f'("{gene}"[Gene] OR "{gene}"[Title] OR "{gene}"[All Fields])'
         
-        # Robust SLEN query to avoid whole genomes
         query = f'"{organism}"[Organism] OR "{organism}"[All Fields] OR {gene_query} AND 100:15000[SLEN] NOT "partial"[Title]'
         
         try:
@@ -117,37 +110,20 @@ class ScreeningAgent:
 
 # --- AGENT 5: THE PROBE AGENT (qPCR Specialist) ---
 class ProbeAgent:
-    """Specializes in finding internal probes between primer pairs."""
     def select_probes(self, df_candidates, df_pairs, min_probe_tm, max_results=10, min_spacing=50):
         print(f"[ProbeAgent]: Screening internal probes for {len(df_pairs)} primer pairs...")
         probe_candidates = df_candidates[df_candidates['Tm'] >= min_probe_tm]
         final_sets = []
-        
-        # 1. Sort primer pairs by the most conserved first
         df_pairs['Cons_Avg_Pairs'] = (df_pairs['Cons_F'] + df_pairs['Cons_R']) / 2
         sorted_pairs = df_pairs.sort_values(by='Cons_Avg_Pairs', ascending=False)
 
         for p_idx, pair in sorted_pairs.iterrows():
-            # 2. SPATIAL FILTER: Check if this pair is too close to an already selected assay
-            too_close = False
-            for selected in final_sets:
-                if abs(pair['Start'] - selected['Start']) < min_spacing:
-                    too_close = True
-                    break
-            
-            # Skip this primer pair if it's right next to an assay we already saved
-            if too_close:
-                continue
+            too_close = any(abs(pair['Start'] - selected['Start']) < min_spacing for selected in final_sets)
+            if too_close: continue
 
-            # 3. Find ONE internal probe for this spatially diverse primer pair
             probe_found = False
             for c_idx, cand in probe_candidates.iterrows():
-                probe_start = cand['Location']
-                probe_end = cand['Location'] + cand['AlignWidth']
-                fwd_end = pair['Start'] + pair['AlignWidthF']
-                rev_start = pair['End'] - pair['AlignWidthR']
-
-                if probe_start > fwd_end and probe_end < rev_start:
+                if cand['Location'] > (pair['Start'] + pair['AlignWidthF']) and (cand['Location'] + cand['AlignWidth']) < (pair['End'] - pair['AlignWidthR']):
                     final_sets.append({
                         'Forward': pair['Forward'], 'Reverse': pair['Reverse'], 'Probe': cand['Sequence'],
                         'Start': pair['Start'], 'End': pair['End'], 'PLoc': cand['Location'],
@@ -155,13 +131,86 @@ class ProbeAgent:
                         'Cons_Avg': round((pair['Cons_F'] + pair['Cons_R'] + cand['Conservation'])/3, 1)
                     })
                     probe_found = True
-                    break # Break out of the probe loop; move to the next primer pair!
+                    break 
             
-            # 4. Stop if we have successfully gathered a diverse set of 10 assays
             if probe_found and len(final_sets) >= max_results:
                 break
-                
         return pd.DataFrame(final_sets)
+
+# --- AGENT 6: THE LAMP AGENT ---
+class LampAgent:
+    """Specializes in isothermal 6-region amplification architecture."""
+    def design_lamp(self, df_candidates, min_tm, max_results=10):
+        print(f"[LampAgent]: Screening for LAMP primer sets (6 distinct regions)...")
+        
+        # Sort spatially (Critical for progressive looping!)
+        df_filtered = df_candidates[df_candidates['Tm'] >= min_tm].sort_values("Location").reset_index(drop=True)
+        records = df_filtered.to_dict('records')
+        n = len(records)
+        lamp_sets = []
+
+        # Standard Spatial Constraints (LAMP GAP constraints)
+        d_F3_F2_min, d_F3_F2_max = 0, 60
+        d_F2_F1_min, d_F2_F1_max = 40, 60
+        d_F1_B1_min, d_F1_B1_max = 10, 60  # The loop / dumbbell formation region
+        d_B1_B2_min, d_B1_B2_max = 40, 60
+        d_B2_B3_min, d_B2_B3_max = 0, 60
+
+        for i in range(n):
+            r1 = records[i] # F3
+            for j in range(i+1, n):
+                r2 = records[j] # F2
+                dist1 = r2['Location'] - (r1['Location'] + r1['AlignWidth'])
+                if dist1 > d_F3_F2_max: break
+                if dist1 < d_F3_F2_min: continue
+                
+                for k in range(j+1, n):
+                    r3 = records[k] # F1
+                    dist2 = r3['Location'] - (r2['Location'] + r2['AlignWidth'])
+                    if dist2 > d_F2_F1_max: break
+                    if dist2 < d_F2_F1_min: continue
+                    
+                    for l in range(k+1, n):
+                        r4 = records[l] # B1c
+                        dist3 = r4['Location'] - (r3['Location'] + r3['AlignWidth'])
+                        if dist3 > d_F1_B1_max: break
+                        if dist3 < d_F1_B1_min: continue
+                        
+                        for m in range(l+1, n):
+                            r5 = records[m] # B2c
+                            dist4 = r5['Location'] - (r4['Location'] + r4['AlignWidth'])
+                            if dist4 > d_B1_B2_max: break
+                            if dist4 < d_B1_B2_min: continue
+                            
+                            for p in range(m+1, n):
+                                r6 = records[p] # B3c
+                                dist5 = r6['Location'] - (r5['Location'] + r5['AlignWidth'])
+                                if dist5 > d_B2_B3_max: break
+                                if dist5 < d_B2_B3_min: continue
+                                
+                                # -- Assemble LAMP Primers --
+                                F3_seq = r1['Sequence']
+                                F1c = str(Seq(r3['Sequence']).reverse_complement())
+                                FIP_seq = F1c + r2['Sequence']
+                                B2 = str(Seq(r5['Sequence']).reverse_complement())
+                                BIP_seq = r4['Sequence'] + B2
+                                B3_seq = str(Seq(r6['Sequence']).reverse_complement())
+                                
+                                ampsize = (r6['Location'] + r6['AlignWidth']) - r1['Location']
+                                avg_cons = round(sum([r['Conservation'] for r in [r1,r2,r3,r4,r5,r6]])/6, 1)
+                                
+                                lamp_sets.append({
+                                    'F3': F3_seq, 'FIP': FIP_seq, 'BIP': BIP_seq, 'B3': B3_seq,
+                                    'Start': r1['Location'], 'End': r6['Location'] + r6['AlignWidth'],
+                                    'Ampsize': ampsize, 'F3_Tm': r1['Tm'], 'B3_Tm': r6['Tm'],
+                                    'Avg_Cons': avg_cons
+                                })
+                                
+                                # Early exit if we have enough sets
+                                if len(lamp_sets) >= max_results:
+                                    return pd.DataFrame(lamp_sets)
+                                    
+        return pd.DataFrame(lamp_sets)
 
 # --- THE MASTER ORCHESTRATOR ---
 class MasterOrchestrator:
@@ -171,67 +220,57 @@ class MasterOrchestrator:
         self.analyst = AnalystAgent()
         self.screener = ScreeningAgent()
         self.probe_agent = ProbeAgent()
+        self.lamp_agent = LampAgent() # <--- Agent 6 Integrated
 
     def execute(self, org, gene, count, kw, pcr_params):
-        # 1. Enforce a minimum count for Multiple Sequence Alignment
         if not isinstance(count, int) or count < 2:
-            print(f"[Master]: 'count' of {count} is too low for alignment. Defaulting to 10.")
+            print(f"[Master]: 'count' of {count} is too low. Defaulting to 10.")
             count = 10
 
         raw = self.searcher.fetch_sequences(org, gene, count)
-        if not raw: 
-            return None
-            
-        # 2. Validate that NCBI actually returned multiple FASTA sequences
-        if raw.count('>') < 2:
-            print(f"[Master]: Error - NCBI returned less than 2 sequences. Cannot perform alignment.")
-            return None
+        if not raw or raw.count('>') < 2: 
+            print(f"[Master]: Error - Not enough sequences found/fetched."); return None
 
-        # 3. Perform Alignment
         aln = self.aligner.align(raw)
-        if not aln: 
-            return None
+        if not aln: return None
             
-        # Save the alignment to a FASTA file 
         aln_fn = f"{org}_{gene}_alignment.fasta".replace(" ", "_").lower()
-        with open(aln_fn, "w") as f:
-            f.write(aln)
+        with open(aln_fn, "w") as f: f.write(aln)
         print(f"[Master]: SUCCESS. Alignment saved to {aln_fn}")
                 
-        # 4. Analyze candidates
         candidates = self.analyst.calculate_stats(aln, kw, 2, 0.05)
-        
         if candidates.empty:
-            print("[Master]: No conserved candidate regions found. Try relaxing the conservation cutoff.")
-            return None
+            print("[Master]: No conserved candidate regions found."); return None
 
-        # 5. Screen pairs
+        # --- Pipeline A: Standard TaqMan qPCR ---
         pairs = self.screener.screen_pairs(candidates, pcr_params['min_amp'], pcr_params['max_amp'], pcr_params['min_tm'], pcr_params['max_diff'])
-        
-        if pairs.empty:
-            print("[Master]: No primer pairs found."); return None
+        if not pairs.empty:
+            final_probe_df = self.probe_agent.select_probes(candidates, pairs, pcr_params['min_probe_tm'])
+            if not final_probe_df.empty:
+                csv_fn = f"{org}_{gene}_probe_sets.csv".replace(" ","_").lower()
+                final_probe_df.to_csv(csv_fn, index=False)
+                print(f"[Master]: SUCCESS. TaqMan sets saved to {csv_fn}")
+            else: print("[Master]: No valid TaqMan probes found.")
+        else: print("[Master]: No valid standard PCR primer pairs found.")
 
-        # 6. Select Probes
-        final_df = self.probe_agent.select_probes(candidates, pairs, pcr_params['min_probe_tm'])
-
-        # 7. Output Final CSV
-        if not final_df.empty:
-            csv_fn = f"{org}_{gene}_probe_sets.csv".replace(" ","_").lower()
-            final_df.to_csv(csv_fn, index=False)
-            print(f"[Master]: SUCCESS. TaqMan sets saved to {csv_fn}")
-            print(final_df.head(5))
-            return csv_fn
+        # --- Pipeline B: LAMP ---
+        lamp_df = self.lamp_agent.design_lamp(candidates, pcr_params['min_tm'])
+        if not lamp_df.empty:
+            lamp_fn = f"{org}_{gene}_lamp_sets.csv".replace(" ","_").lower()
+            lamp_df.to_csv(lamp_fn, index=False)
+            print(f"[Master]: SUCCESS. LAMP sets saved to {lamp_fn}")
         else:
-            print("[Master]: No valid probes found between the primer pairs.")
-            return None
+            print("[Master]: No valid LAMP primer sets found.")
 
 if __name__ == "__main__":
     pcr = {
-        'min_amp': int(input("Min Amplicon Size: ")), 'max_amp': int(input("Max Amplicon Size: ")),
-        'min_tm': int(input("Min Primer Tm: ")), 'min_probe_tm': int(input("Min Probe Tm: ")),
-        'max_diff': int(input("Max Length Diff: "))
+        'min_amp': int(input("Min Amplicon Size (qPCR): ")), 
+        'max_amp': int(input("Max Amplicon Size (qPCR): ")),
+        'min_tm': int(input("Min Primer Tm (qPCR/LAMP): ")), 
+        'min_probe_tm': int(input("Min Probe Tm (qPCR): ")),
+        'max_diff': int(input("Max Length Diff (qPCR): "))
     }
     MasterOrchestrator().execute(
         input("Organism: "), input("Gene: "), int(input("NCBI Records: ")), 
-        input("species: "), pcr
+        input("species filter: "), pcr
     )
