@@ -88,6 +88,8 @@ To screen for potential Taqman probe.
 
 It is recommended to set the melting temperature to be at least 5 deg C higher relative to the primer pair.
 
+<br/>
+
 **Step5_LAMPPrimers.py:**
 
 Unlike conventional PCR, LAMP primer design requires identifying 6 distinct target regions on the DNA sequence even though the final assay may only use four primary primers.
