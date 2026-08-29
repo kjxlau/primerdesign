@@ -1,169 +1,96 @@
-<h1>PRIMER DESIGN TOOL</h1>
+# 🧬 Automated Multi-Agent Bioinformatics Pipeline
 
-This is a series of 5-step python scripts that can be used to generate candidate primers and probes for Polymerase Chain Reaction (PCR) in your experiments.
+An AI-orchestrated bioinformatics workflow for automated **qPCR** and **LAMP** primer and probe design. 
 
-I will explain each of the 5-step python scripts as follows:
+Built using **LangGraph**, **LangChain**, and **Biopython**, this tool automates the tedious and error-prone process of manual primer design. By stringing together specialized "agents," the pipeline autonomously fetches sequences, aligns them, identifies conserved regions, calculates thermodynamic properties, and outputs highly specific primer/probe sets for infectious disease diagnostics or genetic research.
 
-<br />
+---
 
-**Step1_DownloadFasta.py:**
+## 🔬 1. Overview
 
-Users will be prompted to enter 
+### What are we trying to solve?
+Designing robust qPCR and LAMP assays traditionally requires hopping between multiple databases (NCBI), alignment tools (Clustal/MAFFT), and primer design software (Primer3), followed by manual thermodynamic calculations. This manual process is time-consuming and prone to human error.
 
-(1) No of fasta entries to download
+### The Solution
+This pipeline orchestrates a **multi-agent state graph** to automate the workflow from end to end. You simply input a target organism and gene, and the system handles the rest.
 
-(2) Organism of interest or NCBI taxa ID
+### ⚙️ Pipeline Workflow
+The workflow runs as a directed graph with the following sequential and parallel nodes:
+1. **🔍 Search Agent (`search`):** Connects to the NCBI Nucleotide database via Entrez to smartly query and fetch relevant FASTA sequences (e.g., 16S, ITS, or specific genes) while filtering out incomplete records.
+2. **📏 Alignment Agent (`align`):** Processes raw sequences and performs multiple sequence alignment (MSA).
+3. **📊 Analyst Agent (`analyze`):** Analyzes the alignment to identify highly conserved regions suitable for primer targeting.
+4. **🧪 qPCR Agent (`qpcr`):** *(Runs in parallel)* Screens for forward/reverse primer pairs and selects an internal fluorescent probe based on strict thermodynamic parameters (Tm, amplicon size, GC content).
+5. **💡 LAMP Agent (`lamp`):** *(Runs in parallel)* Designs Loop-Mediated Isothermal Amplification primer sets (F3, B3, FIP, BIP, LoopF, LoopB) for rapid diagnostics.
+6. **🤖 Reporter Agent (`report`):** Uses **OpenAI (GPT-4o)** to analyze the run context and generate a final human-readable summary report.
 
-https://www.ncbi.nlm.nih.gov/nuccore/advanced 
+---
 
-Use NCBI advanced search tool to get search strings to download highly specific sequences of interest
+## 🛠️ 2. Setup Instructions
 
-Example 1:
+### Prerequisites
+* **Python 3.8+**
+* An **NCBI Account** (for API key and email)
+* An **OpenAI API Key** (for the reporting agent)
 
->(Human Papillomavirus[Organism]) AND E6[Gene Name] 
-
-Example 2:
-
->(Dengue Virus[Organism]) AND NS1[Gene Name] 
-
-(3) Filename to save in .fasta format. Users will need to then align the file using either clustalW or mafft multiple sequence aligment programs to generate an aligned sequence fasta file.
-
-Replace the fasta header of the file with the target strain name, so that Step2_FindConsensusSeq.py script can identify which sequences to look at to shortlist primer sequences.
-
-Example 1:
-
-> \>HPV16 (fasta header)
-
-Example 2:
-
-> \>DENV1 (fasta header)
-
-<br />
-
-**Step2_FindConsensusSeq.py:**
-
-Users will be prompted to enter 
-
-(1) Alignment file from step 1
-
-(2) The targeted serotype/species/strain
-
-Example 1:
-
->HPV16
-
-Example 2:
-
->DENV1
-
-(3) No of degenerate bases 
-
-(4) The percent cutoff for no of mutations allowed acrossed sequences (recommended: < 0.05)
-
-The script will shortlist all potential sequences that are good primer candidates.
-
-<br />
-
-**Step3_PrimerScreening.py:**
-
-Users will be prompted to enter 
-
-(1) Minimum and maximum amplicon size
-
-(2) Melting Temperature of amplicon product
-
-(3) Max difference in length of flanking primer pair
-
-To screen for potential primer sets
-
-<br />
-
-**Step4_ProbeSelect.py:**
-
-Users will be prompted to enter 
-
-(1) Minimum probe melting temperature required
-
-To screen for potential Taqman probe.
-
-It is recommended to set the melting temperature to be at least 5 deg C higher relative to the primer pair.
-
-<br/>
-
-**Step5_LAMPPrimers.py:**
-
-Unlike conventional PCR, LAMP primer design requires identifying 6 distinct target regions on the DNA sequence even though the final assay may only use four primary primers.
-
-<br />
-
-F3 (Forward Outer Primer): Corresponds directly to the F3 region
-
-<br />
-
-FIP (Forward Internal Primer): Consists of F1c + F2, where F1c is the reverse complement of F1
-
-<br />
-
-BIP (Backward Internal Primer): Consists of B1c + B2, where B1c is the reverse complement of B1
-
-<br />
-
-B3 (Backward Outer Primer): Reverse complement of the B3c region
-
-<br />
-
-The script first sorts candidate primers according to their positions on the target sequence. It then performs a progressive search using the spacing constraints defined for the LAMP primer design.
-
-Please also check for secondary structure (hairpin) using other tools like OligoAnalyzer
-
-https://www.idtdna.com/pages/tools/oligoanalyzer
-
-<br />
-
-Have fun developing your own PCR test kit. 
-Step 1 to step 5 can be orchestrated using a multi-agentic approach as demonstrated here:
-[Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py)
-
-This can be further interfaced with a local chatbot, Ollama
-
-<br />
-
-To install required python packages and libraries:
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/yourusername/bioinformatics-pipeline.git
+cd bioinformatics-pipeline
 ```
-pip install -r requirements.txt
+
+### Step 2: Create a Virtual Environment (Recommended)
+```bash
+python -m venv venv
+
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 ```
-<br />
 
-To install ollama: 
+### Step 3: Install Dependencies
+Ensure you install the required Python libraries:
+```bash
+pip install biopython pandas langgraph langchain-openai langchain-core python-dotenv requests
 ```
-pip install ollama
+*(If your AlignmentAgent relies on local tools like MAFFT or ClustalW, ensure they are installed on your system's PATH).*
+
+### Step 4: Configure Environment Variables
+In the root directory of the project, create a file named `.env`. 
+Add your API keys and credentials to this file:
+
+```env
+# .env file
+NCBI_EMAIL=your_email@example.com
+NCBI_API_KEY=your_ncbi_api_key_here
+OPENAI_API_KEY=sk-your_openai_api_key_here
 ```
-<br />
+> **Note:** Never commit your `.env` file to version control. Ensure it is included in your `.gitignore`.
 
-To load llama3: 
+---
+
+## 🚀 3. How to Run the Pipeline
+
+Execute the main script from your terminal. The script is interactive and will prompt you for your targets.
+
+```bash
+python main.py
 ```
-ollama pull llama3
+
+### Example Interactive Run:
+```text
+--- Primer & Probe Design Pipeline Setup ---
+Enter organism of interest [default: Escherichia coli]: Mycobacterium tuberculosis
+Enter target gene/region [default: 16S]: rpoB
+Enter matching keyword [default: Mycobacterium]: Mycobacterium
+Enter number of sequences to fetch [default: 10]: 15
+
+🚀 Running pipeline for: 'Mycobacterium tuberculosis' (Gene: 'rpoB')...
 ```
-<br />
 
-Run [Ollama_chatbot.py](https://github.com/kjxlau/primerdesign/blob/main/Ollama_chatbot.py) in the same directory as [Multiagent_orchestrator.py](https://github.com/kjxlau/primerdesign/blob/main/Multiagent_orchestrator.py) to initialize chatbot.
-
-<br />
-
-Start chat: 
->Design a TaqMan and LAMP assay for 16S rRNA gene in Bacillus subtilis
-
-<br />
-
-The app can also be run using Qwen2.5-1.5B LLM at:
-https://huggingface.co/spaces/kennylau91/primerdesign
-
-<br />
-
-For any queries, you can reach out to me via email at kennyjxlau@gmail.com
-
-<br />
-
-Best regards,
-
-Kenny
+### 📂 Output Files
+Once the pipeline finishes executing, it will output the following in your working directory:
+1. **`{organism}_{gene}_alignment.fasta`** - The aligned sequences used for analysis.
+2. **`{organism}_{gene}_probe_sets.csv`** - The final filtered list of viable qPCR primers and probes.
+3. **`{organism}_{gene}_lamp_sets.csv`** - The final filtered list of LAMP primer sets.
+4. **Console Output** - An LLM-generated executive summary detailing the success and results of the pipeline run.
