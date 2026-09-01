@@ -63,6 +63,7 @@ flowchart TD
     
     REPORT -->|<i>state: report string</i>| END
 ```
+
 ---
 
 ## 🛠️ 2. Setup Instructions
