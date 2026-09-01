@@ -25,45 +25,21 @@ The workflow runs as a directed graph with the following sequential and parallel
 
 # Project Workflow
 ```mermaid
-flowchart TD
-    %% Styling Definitions
-    classDef startend fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#000
-    classDef sequential fill:#f8f9fa,stroke:#6c757d,stroke-width:2px,color:#000
-    classDef parallel fill:#e6f2ff,stroke:#0056b3,stroke-width:2px,color:#000
-    classDef llm fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#000
-
-    %% Nodes
-    START(((START))):::startend
-    END(((END))):::startend
-
-    SEARCH["🔍 Search Node<br><i>(SearchAgent)</i>"]:::sequential
-    ALIGN["📏 Align Node<br><i>(AlignmentAgent)</i>"]:::sequential
-    ANALYZE["📊 Analyze Node<br><i>(AnalystAgent)</i>"]:::sequential
+graph TD
+    START((START)) --> SEARCH[🔍 Search Agent]
     
-    subgraph Parallel Design Execution
-        direction LR
-        QPCR["🧪 qPCR Node<br><i>(Screening & Probe Agents)</i>"]:::parallel
-        LAMP["💡 LAMP Node<br><i>(LampAgent)</i>"]:::parallel
-    end
+    SEARCH -->|Raw FASTA| ALIGN[📏 Alignment Agent]
     
-    REPORT["🤖 Report Node<br><i>(OpenAI LLM)</i>"]:::llm
-
-    %% Edges (The Flow)
-    START -->|Input: Organism, Gene| SEARCH
+    ALIGN -->|Aligned FASTA| ANALYZE[📊 Analyst Agent]
     
-    SEARCH -->|<i>state: raw_sequences</i>| ALIGN
+    ANALYZE -->|Candidate Regions| QPCR[🧪 qPCR Agent]
+    ANALYZE -->|Candidate Regions| LAMP[💡 LAMP Agent]
     
-    ALIGN -->|<i>state: alignment_fasta</i>| ANALYZE
+    QPCR -->|qPCR CSV| REPORT[🤖 Report Agent]
+    LAMP -->|LAMP CSV| REPORT
     
-    ANALYZE -->|<i>state: candidates_df</i>| QPCR
-    ANALYZE -->|<i>state: candidates_df</i>| LAMP
-    
-    QPCR -->|<i>qPCR_sets.csv</i>| REPORT
-    LAMP -->|<i>LAMP_sets.csv</i>| REPORT
-    
-    REPORT -->|<i>state: report string</i>| END
+    REPORT -->|Executive Summary| END((END))
 ```
-
 ---
 
 ## 🛠️ 2. Setup Instructions
