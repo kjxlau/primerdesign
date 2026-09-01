@@ -98,12 +98,16 @@ def report_node(state: PipelineState) -> dict:
     gene = state.get("gene")
     candidates_found = state.get("candidates") is not None
     
+    # Fix the LLM prompt so it doesn't hallucinate
+    csv_status = "CSV files were successfully generated." if candidates_found else "No CSV files were generated because no viable candidates were found."
+    
     sys_msg = SystemMessage(content="You are an expert bioinformatics assistant.")
     human_msg = HumanMessage(content=(
         f"A primer design pipeline has just finished for the organism '{organism}' and target gene '{gene}'.\n"
         f"Were viable alignment candidates found? {'Yes' if candidates_found else 'No'}.\n"
+        f"Resulting file status: {csv_status}\n"
         f"Please write a brief, professional 3-sentence summary stating that the automated qPCR and "
-        f"LAMP primer design process has concluded, and indicate whether CSV files were successfully generated."
+        f"LAMP primer design process has concluded. Accurately reflect the file generation status provided."
     ))
     
     response = llm.invoke([sys_msg, human_msg])
