@@ -23,6 +23,7 @@ The workflow runs as a directed graph with the following sequential and parallel
 5. **💡 LAMP Agent (`lamp`):** *(Runs in parallel)* Designs Loop-Mediated Isothermal Amplification primer sets (F3, B3, FIP, BIP, LoopF, LoopB) for rapid diagnostics.
 6. **🤖 Reporter Agent (`report`):** Uses **OpenAI (GPT-4o)** to analyze the run context and generate a final human-readable summary report.
 
+# Project Workflow
 ```mermaid
 flowchart TD
     %% Styling Definitions
