@@ -24,21 +24,36 @@ The workflow runs as a directed graph with the following sequential and parallel
 6. **🤖 Reporter Agent (`report`):** Uses **OpenAI (GPT-4o)** to analyze the run context and generate a final human-readable summary report.
 
 # Project Workflow
-```mermaid
-graph TD
-    START((START)) --> SEARCH[🔍 Search Agent]
-    
-    SEARCH -->|Raw FASTA| ALIGN[📏 Alignment Agent]
-    
-    ALIGN -->|Aligned FASTA| ANALYZE[📊 Analyst Agent]
-    
-    ANALYZE -->|Candidate Regions| QPCR[🧪 qPCR Agent]
-    ANALYZE -->|Candidate Regions| LAMP[💡 LAMP Agent]
-    
-    QPCR -->|qPCR CSV| REPORT[🤖 Report Agent]
-    LAMP -->|LAMP CSV| REPORT
-    
-    REPORT -->|Executive Summary| END((END))
+```text
+[ START: User Input (Organism, Gene, PCR Params) ]
+                           │
+                           ▼
+           [ 🔍 SearchAgent: Fetch Sequences ]
+                           │
+                           ├─> Output: raw_sequences
+                           ▼
+          [ 📏 AlignmentAgent: Sequence Alignment ]
+                           │
+                           ├─> Output: alignment.fasta
+                           ▼
+        [ 📊 AnalystAgent: Conservation Analysis ]
+                           │
+                           ├─> Output: candidates_df
+                           │
+            ┌──────────────┴──────────────┐
+            ▼                             ▼
+    [ 🧪 qPCR Node ]              [ 💡 LAMP Node ]
+   (Parallel Execution)          (Parallel Execution)
+            │                             │
+            ├─> qPCR_sets.csv             ├─> LAMP_sets.csv
+            │                             │
+            └──────────────┬──────────────┘
+                           ▼
+          [ 🤖 ReportAgent: OpenAI LLM Summary ]
+                           │
+                           ├─> Output: console_report
+                           ▼
+                        [ END ]
 ```
 ---
 
