@@ -66,8 +66,8 @@ The workflow runs as a directed graph with the following sequential and parallel
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/yourusername/bioinformatics-pipeline.git
-cd bioinformatics-pipeline
+git clone https://github.com/kjxlau/primerdesign.git
+cd LangGraph
 ```
 
 ### Step 2: Create a Virtual Environment (Recommended)
